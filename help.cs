@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-// ── Color enum ───────────────────────────────────────────────
+//Color enum 
 
 public enum Color {
     Black = 0,
@@ -266,7 +266,7 @@ public enum Color {
     Grey_99_255 = 255
 }
 
-// ── Vec3 ─────────────────────────────────────────────────────
+// Vec3 
 public readonly struct Vec3
 {
     public readonly float X, Y, Z;
@@ -289,9 +289,8 @@ public readonly struct Vec3
     }
 }
 
-// ── RigidBody ────────────────────────────────────────────────
-// Attach to a SceneObject via rigidBody:true in the constructor.
-// Physics.StepRigidBodies() drives all objects that have one attached.
+//RigidBody
+
 public class RigidBody
 {
     public Vec3  LinearVelocity  = new(0,0,0);
@@ -302,15 +301,13 @@ public class RigidBody
     public float Restitution     = 0.4f;
     public float Friction        = 0.5f;
     public bool  IsAwake         = true;
-    public float SleepTimer      = 0f;   // seconds spent below sleep threshold
+    public float SleepTimer      = 0f;   
     public Vec3  InertiaTensor   = new(1,1,1);
 
-    // Local-space offset of the centre of mass from the object origin.
-    // (0,0,0) = centred — correct for symmetric shapes like cubes.
-    // Shift to make objects tip/spin off-centre, e.g. (0,-0.8f,0) = bottom-heavy.
+  
     public Vec3  CenterOfMass    = new(0,0,0);
 
-    // Recompute diagonal inertia tensor from box half-extents (= Scale).
+    // Recompute diagonal inertia 
     public void ComputeBoxInertia(Vec3 scale)
     {
         float m  = Mass;
@@ -328,7 +325,7 @@ public class RigidBody
     public void ClearAccumulators()    { Force = new(0,0,0); Torque = new(0,0,0); }
 }
 
-// ── Mesh ──────────────────────────────────────────────────────
+//Mesh
 public class Mesh
 {
     public readonly Vec3[] Verts;
@@ -424,7 +421,7 @@ public class Mesh
         });
 }
 
-// ── Tesseract4D ───────────────────────────────────────────────
+//Tesseract4D
 public class Tesseract4D
 {
     static readonly (float x,float y,float z,float w)[] Verts4 =
@@ -476,7 +473,7 @@ public class Tesseract4D
     }
 }
 
-// ── SceneObject ───────────────────────────────────────────────
+//SceneObject
 public class SceneObject
 {
     public Vec3        Position;
@@ -485,7 +482,7 @@ public class SceneObject
     public Mesh        Mesh;
     public Color       Color;
     public Tesseract4D? Tess4D;
-    public RigidBody?  Body;       // null = static collider, non-null = simulated
+    public RigidBody?  Body;      
 
     public float SpinXW=0f, SpinYW=0f, SpinZW=0f;
 
@@ -570,7 +567,7 @@ public class SceneObject
     }
 }
 
-// ── Engine ────────────────────────────────────────────────────
+//Engine
 class Engine3D
 {
     const int W = 755;
@@ -850,7 +847,7 @@ class Engine3D
     static readonly Stopwatch SW = Stopwatch.StartNew();
     static double prevT = 0;
 
-    // ── Input ─────────────────────────────────────────────────
+    //Input
     static readonly HashSet<ConsoleKey> Keys    = new();
     static readonly HashSet<ConsoleKey> KeysRaw = new();
     static readonly Dictionary<ConsoleKey, long> KeyTimestamps = new();
@@ -860,7 +857,7 @@ class Engine3D
 
     static readonly float D = MathF.PI / 180f;
 
-    // ── Player ────────────────────────────────────────────────
+    //Player
     static SceneObject Player = new SceneObject(
         Mesh.Cube(), x:0, y:1, z:-8,
         scaleX:0.4f, scaleY:0.9f, scaleZ:0.4f);
@@ -921,17 +918,16 @@ class Engine3D
         new SceneObject(Mesh.Cube(), x:-15, y:9, z:10, scaleX:1, scaleY:10, scaleZ:1, color: Color.Blue_07_17,
                         rotY:45, rotX:(float)Gametest.rampWinkel(Gametest.c(5,5),10,Gametest.rampL(Gametest.c(5,5),10))),
 
-        // ── rigid body examples ───────────────────────────────
-        // drop a red box — falls, bounces and tumbles on impact
+       
         new SceneObject(Mesh.Cube(), x:5, y:15, z:5, color:Color.Red_33_196,
                         rigidBody:true, mass:1f, restitution:0.5f),
 
-        // heavier orange box — barely bounces, settles quickly
+        
         new SceneObject(Mesh.Cube(), x:-3, y:20, z:8, color:Color.Orange_40_137,
                         scaleX:1.5f, scaleY:1.5f, scaleZ:1.5f,
                         rigidBody:true, mass:3f, restitution:0.1f),
 
-        // Tesseract — not a rigid body, just spins
+        
         SceneObject.Tesseract(x:20, y:20, z:15, scaleX:-3f, scaleY:-3f, scaleZ:-3f,
                               color:Color.Purple_53_99, spinXW:3f, spinYW:3f),
 
@@ -940,7 +936,7 @@ class Engine3D
 
     static readonly int StaticSceneCount = Scene.Count;
 
-    // ── Code generator ───────────────────────────────────────
+    //Code generator
     static string MeshName(Mesh m) => m.Verts.Length switch
     {
         8 => "Mesh.Cube()",
@@ -973,14 +969,11 @@ class Engine3D
             Console.WriteLine(sb);
         }
     }
-
-    // ═══════════════════════════════════════════════════════════
-    //  GAME LOOP
-    // ═══════════════════════════════════════════════════════════
+    
     static float counter;
     static void GameLoop(float dt)
     {
-        // rigid body simulation runs first every frame
+        // rigid body simulation runs first every frame pls dont remove
         Physics.StepRigidBodies(Scene, dt);
 
         counter += 0.02f;
@@ -1020,7 +1013,7 @@ class Engine3D
         if (Keys.Contains(ConsoleKey.X) && Scene.Count > 0)
             Scene.RemoveAt(Scene.Count - 1);
     }
-    // ═══════════════════════════════════════════════════════════
+ 
 
     static void Main()
     {
@@ -1304,13 +1297,11 @@ class Engine3D
         => Physics.Raycast(new Vec3(camX, camY, camZ), direction, maxLength, Scene);
 }
 
-// ── Physics ───────────────────────────────────────────────────
+
 public static class Physics
 {
     const float Gravity = -18f;
 
-    // ── Rigid body simulation ─────────────────────────────────
-    // Called once per frame from GameLoop before anything else.
     public static void StepRigidBodies(List<SceneObject> scene, float dt)
     {
         // 1. Integrate forces → velocities → positions
@@ -1319,22 +1310,21 @@ public static class Physics
             var b = obj.Body;
             if (b == null || !b.IsAwake) continue;
 
-            // gravity applied at CoM — offset CoM generates a tipping torque
+            
             Vec3 gravForce  = new Vec3(0, Gravity * b.Mass, 0);
             b.AddForce(gravForce);
 
-            // gravity torque: cross(comOffset_worldSpace, gravForce)
-            // makes a slanted object tip toward flat resting position
+       
             Vec3 comOffset  = RotateByObject(obj, b.CenterOfMass);
             Vec3 gravTorque = Vec3.Cross(comOffset, gravForce);
             b.AddTorque(gravTorque);
 
-            // linear integration
+        
             Vec3 accel       = b.Force * (1f / b.Mass);
             b.LinearVelocity = b.LinearVelocity + accel * dt;
             obj.Position     = obj.Position + b.LinearVelocity * dt;
 
-            // angular integration
+        
             Vec3 angAccel     = new Vec3(
                 b.Torque.X / b.InertiaTensor.X,
                 b.Torque.Y / b.InertiaTensor.Y,
@@ -1344,14 +1334,13 @@ public static class Physics
             obj.RotY         += b.AngularVelocity.Y * dt;
             obj.RotZ         += b.AngularVelocity.Z * dt;
 
-            // angular damping
+          
             float angDamp     = MathF.Pow(0.97f, dt * 60f);
             b.AngularVelocity = b.AngularVelocity * angDamp;
 
             b.ClearAccumulators();
         }
 
-        // 2. Collision detection + impulse resolution
         for (int i = 0; i < scene.Count; i++)
         {
             var a = scene[i];
@@ -1367,7 +1356,6 @@ public static class Physics
                 if (!AABBPenetration(amin, amax, bmin, bmax, out Vec3 normal, out float depth))
                     continue;
 
-                // wake a sleeping neighbour that we just hit
                 if (other.Body != null && !other.Body.IsAwake)
                 {
                     other.Body.IsAwake    = true;
@@ -1381,14 +1369,12 @@ public static class Physics
                 if (otherDynamic)
                     other.Position = other.Position - normal * (depth * shareB);
 
-                // true contact point: the vertex of 'a' deepest into 'other'
-                // using the actual mesh vertex gives a correct torque arm
-                // which is what makes tilted objects roll and fall flat
+          
                 Vec3 contactPt = DeepestVertex(a, normal * -1f);
                 Vec3 comWorld  = a.Position + RotateByObject(a, a.Body.CenterOfMass);
                 Vec3 rA        = contactPt - comWorld;
 
-                // velocity at contact point (linear + angular contribution)
+             
                 Vec3 velAtContact = a.Body.LinearVelocity + Vec3.Cross(a.Body.AngularVelocity, rA);
                 Vec3 velB         = otherDynamic ? other.Body!.LinearVelocity : new Vec3(0,0,0);
                 float relVel      = Vec3.Dot(velAtContact - velB, normal);
@@ -1398,12 +1384,10 @@ public static class Physics
                     ? (a.Body.Restitution + other.Body!.Restitution) * 0.5f
                     : a.Body.Restitution;
 
-                // kill restitution on small impacts so objects settle instead of
-                // micro-bouncing forever — if the closing speed is below 2 units/s
-                // treat it as a perfectly inelastic collision (e=0)
+            
                 if (MathF.Abs(relVel) < 2.0f) e = 0f;
 
-                // effective mass includes rotational inertia at contact point
+             
                 Vec3  rAxN    = Vec3.Cross(rA, normal);
                 float angMassA = Vec3.Dot(rAxN, new Vec3(
                     rAxN.X / a.Body.InertiaTensor.X,
@@ -1414,19 +1398,18 @@ public static class Physics
                 float impJ   = -(1f + e) * relVel / (invMA + invMB + angMassA);
                 Vec3 impulse = normal * impJ;
 
-                // linear impulse
+         
                 a.Body.LinearVelocity = a.Body.LinearVelocity + impulse * invMA;
                 if (otherDynamic)
                     other.Body!.LinearVelocity = other.Body.LinearVelocity - impulse * invMB;
 
-                // angular impulse — makes objects roll and tip on impact
                 Vec3 torqueImp = Vec3.Cross(rA, impulse);
                 a.Body.AngularVelocity = a.Body.AngularVelocity + new Vec3(
                     torqueImp.X / a.Body.InertiaTensor.X,
                     torqueImp.Y / a.Body.InertiaTensor.Y,
                     torqueImp.Z / a.Body.InertiaTensor.Z);
 
-                // friction — also generates spin (cube rolling along ground)
+             
                 Vec3  tangent = (velAtContact - velB) - normal * relVel;
                 float tLen    = MathF.Sqrt(Vec3.Dot(tangent, tangent));
                 if (tLen > 1e-4f)
@@ -1451,12 +1434,10 @@ public static class Physics
 
                 if (otherDynamic) other.Body!.IsAwake = true;
 
-                // reset sleep timer on any significant collision
                 a.Body.SleepTimer = 0f;
             }
         }
 
-        // 3. Sleep check — objects must be slow for 0.5 s before sleeping
         foreach (var obj in scene)
         {
             var b = obj.Body;
@@ -1481,7 +1462,7 @@ public static class Physics
                 b.SleepTimer = 0f; // reset if moving again
             }
     }
-    // Rotate a local-space vector by the object's XYZ rotation (no scale, no translation).
+
     static Vec3 RotateByObject(SceneObject obj, Vec3 v)
     {
         if (obj.RotX!=0f){ float c=MathF.Cos(obj.RotX),s=MathF.Sin(obj.RotX); v=new(v.X,c*v.Y-s*v.Z,s*v.Y+c*v.Z); }
@@ -1490,8 +1471,7 @@ public static class Physics
         return v;
     }
 
-    // Returns the world-space vertex of obj furthest along direction.
-    // This is the actual contact point — a real vertex, not the AABB centre.
+
     static Vec3 DeepestVertex(SceneObject obj, Vec3 direction)
     {
         Vec3  best  = obj.LocalToWorld(obj.Mesh.Verts[0]);
@@ -1674,7 +1654,7 @@ public static class Physics
   }
 
 
-// ── Gametest ──────────────────────────────────────────────────
+
 public class Gametest
 {
     public static double rampL(double leng, double heig)
