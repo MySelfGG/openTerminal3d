@@ -716,6 +716,8 @@ class Engine3D
 
         
         new SceneObject(Mesh.kugel(), x:50 ,y:20 , z:0 , scaleX:1,scaleY:1,scaleZ:1,color: Color.Purple_53_134, rigidBody:true , mass:1f)
+
+        
     };
 
     static readonly int StaticSceneCount = Scene.Count;
@@ -1312,7 +1314,8 @@ public static class Physics
                 Vec3 accel       = b.Force * (1f / b.Mass);
                 b.LinearVelocity = b.LinearVelocity + accel * sdt;
                 obj.Position     = obj.Position + b.LinearVelocity * sdt;
- 
+                obj.MarkDirty();
+
                 Vec3 angAccel     = new Vec3(
                     b.Torque.X / b.InertiaTensor.X,
                     b.Torque.Y / b.InertiaTensor.Y,
@@ -1321,7 +1324,8 @@ public static class Physics
                 obj.RotX         += b.AngularVelocity.X * sdt;
                 obj.RotY         += b.AngularVelocity.Y * sdt;
                 obj.RotZ         += b.AngularVelocity.Z * sdt;
- 
+                obj.MarkDirty();
+
                 float angDamp     = MathF.Pow(0.97f, sdt * 60f);
                 b.AngularVelocity = b.AngularVelocity * angDamp;
  
@@ -1361,8 +1365,12 @@ public static class Physics
                         {
                             float corrDepth = Math.Max(depth - 0.005f, 0f);
                             a.Position = a.Position + normal * (corrDepth * invMA / total);
+                            a.MarkDirty();
                             if (otherDynamic)
+                            {
                                 other.Position = other.Position - normal * (corrDepth * invMB / total);
+                                other.MarkDirty();
+                            }
                         }
  
                         Vec3 contactPt = DeepestVertex(a, normal * -1f);
