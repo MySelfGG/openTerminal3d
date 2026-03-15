@@ -5,265 +5,42 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading;
+
+
+
+
 //Color enum 
 
 public enum Color {
-    Black = 0,
-    Maroon = 1,
-    DarkGreen = 2,
-    Olive = 3,
-    Navy = 4,
-    Purple = 5,
-    Teal = 6,
-    Silver = 7,
-    Grey = 8,
-    Red = 9,
-    Lime = 10,
-    Yellow = 11,
-    Blue = 12,
-    Fuchsia = 13,
-    Aqua = 14,
-    White = 15,
-    Black_00_16 = 16,
-    Blue_07_17 = 17,
-    Blue_13_18 = 18,
-    Blue_20_19 = 19,
-    Blue_26_20 = 20,
-    Blue_33_21 = 21,
-    Green_07_22 = 22,
-    Cyan_13_23 = 23,
-    Azure_20_24 = 24,
-    Azure_26_25 = 25,
-    Azure_33_26 = 26,
-    Azure_40_27 = 27,
-    Green_13_28 = 28,
-    Cyan_20_29 = 29,
-    Cyan_26_30 = 30,
-    Azure_33_31 = 31,
-    Azure_40_32 = 32,
-    Azure_46_33 = 33,
-    Green_20_34 = 34,
-    Cyan_26_35 = 35,
-    Cyan_33_36 = 36,
-    Cyan_40_37 = 37,
-    Azure_46_38 = 38,
-    Azure_53_39 = 39,
-    Green_26_40 = 40,
-    Cyan_33_41 = 41,
-    Cyan_40_42 = 42,
-    Cyan_46_43 = 43,
-    Cyan_53_44 = 44,
-    Azure_59_45 = 45,
-    Green_33_46 = 46,
-    Cyan_40_47 = 47,
-    Cyan_46_48 = 48,
-    Cyan_53_49 = 49,
-    Cyan_59_50 = 50,
-    Cyan_66_51 = 51,
-    Red_07_52 = 52,
-    Magenta_13_53 = 53,
-    Magenta_20_54 = 54,
-    Magenta_26_55 = 55,
-    Magenta_33_56 = 56,
-    Magenta_40_57 = 57,
-    Yellow_13_58 = 58,
-    Grey_20_59 = 59,
-    Cyan_26_60 = 60,
-    Cyan_33_61 = 61,
-    Cyan_40_62 = 62,
-    Cyan_46_63 = 63,
-    Yellow_20_64 = 64,
-    Teal_26_65 = 65,
-    Teal_33_66 = 66,
-    Cyan_40_67 = 67,
-    Cyan_46_68 = 68,
-    Cyan_53_69 = 69,
-    Yellow_26_70 = 70,
-    Teal_33_71 = 71,
-    Teal_40_72 = 72,
-    Teal_46_73 = 73,
-    Cyan_53_74 = 74,
-    Cyan_59_75 = 75,
-    Yellow_33_76 = 76,
-    Teal_40_77 = 77,
-    Teal_46_78 = 78,
-    Teal_53_79 = 79,
-    Teal_59_80 = 80,
-    Cyan_66_81 = 81,
-    Yellow_40_82 = 82,
-    Teal_46_83 = 83,
-    Teal_53_84 = 84,
-    Teal_59_85 = 85,
-    Teal_66_86 = 86,
-    Teal_73_87 = 87,
-    Red_13_88 = 88,
-    Magenta_20_89 = 89,
-    Magenta_26_90 = 90,
-    Magenta_33_91 = 91,
-    Magenta_40_92 = 92,
-    Magenta_46_93 = 93,
-    Orange_20_94 = 94,
-    Pink_26_95 = 95,
-    Pink_33_96 = 96,
-    Purple_40_97 = 97,
-    Purple_46_98 = 98,
-    Purple_53_99 = 99,
-    Yellow_26_100 = 100,
-    Orange_33_101 = 101,
-    Grey_40_102 = 102,
-    Cyan_46_103 = 103,
-    Cyan_53_104 = 104,
-    Cyan_59_105 = 105,
-    Yellow_33_106 = 106,
-    Lime_40_107 = 107,
-    Teal_46_108 = 108,
-    Teal_53_109 = 109,
-    Cyan_59_110 = 110,
-    Cyan_66_111 = 111,
-    Yellow_40_112 = 112,
-    Lime_46_113 = 113,
-    Teal_53_114 = 114,
-    Teal_59_115 = 115,
-    Teal_66_116 = 116,
-    Cyan_73_117 = 117,
-    Yellow_46_118 = 118,
-    Lime_53_119 = 119,
-    Teal_59_120 = 120,
-    Teal_66_121 = 121,
-    Teal_73_122 = 122,
-    Teal_79_123 = 123,
-    Red_20_124 = 124,
-    Magenta_26_125 = 125,
-    Magenta_33_126 = 126,
-    Magenta_40_127 = 127,
-    Magenta_46_128 = 128,
-    Magenta_53_129 = 129,
-    Orange_26_130 = 130,
-    Pink_33_131 = 131,
-    Pink_40_132 = 132,
-    Pink_46_133 = 133,
-    Purple_53_134 = 134,
-    Purple_59_135 = 135,
-    Orange_33_136 = 136,
-    Orange_40_137 = 137,
-    Pink_46_138 = 138,
-    Pink_53_139 = 139,
-    Purple_59_140 = 140,
-    Purple_66_141 = 141,
-    Yellow_40_142 = 142,
-    Orange_46_143 = 143,
-    Orange_53_144 = 144,
-    Grey_59_145 = 145,
-    Cyan_66_146 = 146,
-    Cyan_73_147 = 147,
-    Yellow_46_148 = 148,
-    Lime_53_149 = 149,
-    Lime_59_150 = 150,
-    Teal_66_151 = 151,
-    Teal_73_152 = 152,
-    Cyan_79_153 = 153,
-    Yellow_53_154 = 154,
-    Lime_59_155 = 155,
-    Lime_66_156 = 156,
-    Teal_73_157 = 157,
-    Teal_79_158 = 158,
-    Teal_86_159 = 159,
-    Red_26_160 = 160,
-    Magenta_33_161 = 161,
-    Magenta_40_162 = 162,
-    Magenta_46_163 = 163,
-    Magenta_53_164 = 164,
-    Magenta_59_165 = 165,
-    Orange_33_166 = 166,
-    Pink_40_167 = 167,
-    Pink_46_168 = 168,
-    Pink_53_169 = 169,
-    Pink_59_170 = 170,
-    Purple_66_171 = 171,
-    Orange_40_172 = 172,
-    Orange_46_173 = 173,
-    Pink_53_174 = 174,
-    Pink_59_175 = 175,
-    Pink_66_176 = 176,
-    Purple_73_177 = 177,
-    Orange_46_178 = 178,
-    Orange_53_179 = 179,
-    Orange_59_180 = 180,
-    Pink_66_181 = 181,
-    Pink_73_182 = 182,
-    Purple_79_183 = 183,
-    Yellow_53_184 = 184,
-    Orange_59_185 = 185,
-    Orange_66_186 = 186,
-    Orange_73_187 = 187,
-    Grey_79_188 = 188,
-    Cyan_86_189 = 189,
-    Yellow_59_190 = 190,
-    Lime_66_191 = 191,
-    Lime_73_192 = 192,
-    Lime_79_193 = 193,
-    Teal_86_194 = 194,
-    Teal_92_195 = 195,
-    Red_33_196 = 196,
-    Magenta_40_197 = 197,
-    Magenta_46_198 = 198,
-    Magenta_53_199 = 199,
-    Magenta_59_200 = 200,
-    Magenta_66_201 = 201,
-    Orange_40_202 = 202,
-    Pink_46_203 = 203,
-    Pink_53_204 = 204,
-    Pink_59_205 = 205,
-    Pink_66_206 = 206,
-    Pink_73_207 = 207,
-    Orange_46_208 = 208,
-    Orange_53_209 = 209,
-    Pink_59_210 = 210,
-    Pink_66_211 = 211,
-    Pink_73_212 = 212,
-    Pink_79_213 = 213,
-    Orange_53_214 = 214,
-    Orange_59_215 = 215,
-    Orange_66_216 = 216,
-    Pink_73_217 = 217,
-    Pink_79_218 = 218,
-    Pink_86_219 = 219,
-    Orange_59_220 = 220,
-    Orange_66_221 = 221,
-    Orange_73_222 = 222,
-    Orange_79_223 = 223,
-    Pink_86_224 = 224,
-    Pink_92_225 = 225,
-    Yellow_66_226 = 226,
-    Orange_73_227 = 227,
-    Orange_79_228 = 228,
-    Orange_86_229 = 229,
-    Orange_92_230 = 230,
-    White_99_231 = 231,
-    Grey_00_232 = 232,
-    Grey_04_233 = 233,
-    Grey_09_234 = 234,
-    Grey_13_235 = 235,
-    Grey_17_236 = 236,
-    Grey_22_237 = 237,
-    Grey_26_238 = 238,
-    Grey_30_239 = 239,
-    Grey_34_240 = 240,
-    Grey_39_241 = 241,
-    Grey_43_242 = 242,
-    Grey_47_243 = 243,
-    Grey_52_244 = 244,
-    Grey_56_245 = 245,
-    Grey_60_246 = 246,
-    Grey_65_247 = 247,
-    Grey_69_248 = 248,
-    Grey_73_249 = 249,
-    Grey_77_250 = 250,
-    Grey_82_251 = 251,
-    Grey_86_252 = 252,
-    Grey_90_253 = 253,
-    Grey_95_254 = 254,
-    Grey_99_255 = 255
+    Black = 0,Maroon = 1,DarkGreen = 2,Olive = 3,Navy = 4,Purple = 5,Teal = 6,Silver = 7,Grey = 8,Red = 9,
+    Lime = 10,Yellow = 11,Blue = 12,Fuchsia = 13,Aqua = 14,White = 15,Black_00_16 = 16,Blue_07_17 = 17,Blue_13_18 = 18,Blue_20_19 = 19,
+    Blue_26_20 = 20,Blue_33_21 = 21,Green_07_22 = 22,Cyan_13_23 = 23,Azure_20_24 = 24,Azure_26_25 = 25,Azure_33_26 = 26,Azure_40_27 = 27,Green_13_28 = 28,Cyan_20_29 = 29,
+    Cyan_26_30 = 30,Azure_33_31 = 31,Azure_40_32 = 32,Azure_46_33 = 33,Green_20_34 = 34,Cyan_26_35 = 35,Cyan_33_36 = 36,Cyan_40_37 = 37,Azure_46_38 = 38,Azure_53_39 = 39,Green_26_40 = 40,
+    Cyan_33_41 = 41,Cyan_40_42 = 42,Cyan_46_43 = 43,Cyan_53_44 = 44,Azure_59_45 = 45,Green_33_46 = 46,Cyan_40_47 = 47,Cyan_46_48 = 48,Cyan_53_49 = 49,Cyan_59_50 = 50,
+    Cyan_66_51 = 51,Red_07_52 = 52,Magenta_13_53 = 53,Magenta_20_54 = 54,Magenta_26_55 = 55,Magenta_33_56 = 56,Magenta_40_57 = 57,Yellow_13_58 = 58,Grey_20_59 = 59,Cyan_26_60 = 60,
+    Cyan_33_61 = 61,Cyan_40_62 = 62,Cyan_46_63 = 63,Yellow_20_64 = 64,Teal_26_65 = 65,Teal_33_66 = 66,Cyan_40_67 = 67,Cyan_46_68 = 68,Cyan_53_69 = 69,Yellow_26_70 = 70,
+    Teal_33_71 = 71,Teal_40_72 = 72,Teal_46_73 = 73,Cyan_53_74 = 74,Cyan_59_75 = 75,Yellow_33_76 = 76,Teal_40_77 = 77,Teal_46_78 = 78,Teal_53_79 = 79,Teal_59_80 = 80,
+    Cyan_66_81 = 81,Yellow_40_82 = 82,Teal_46_83 = 83,Teal_53_84 = 84,Teal_59_85 = 85,Teal_66_86 = 86,Teal_73_87 = 87,Red_13_88 = 88,Magenta_20_89 = 89,Magenta_26_90 = 90,
+    Magenta_33_91 = 91, Magenta_40_92 = 92,Magenta_46_93 = 93,Orange_20_94 = 94,Pink_26_95 = 95,Pink_33_96 = 96,Purple_40_97 = 97,Purple_46_98 = 98,Purple_53_99 = 99,Yellow_26_100 = 100,
+    Orange_33_101 = 101,Grey_40_102 = 102,Cyan_46_103 = 103,Cyan_53_104 = 104,Cyan_59_105 = 105,Yellow_33_106 = 106,Lime_40_107 = 107,Teal_46_108 = 108,Teal_53_109 = 109,Cyan_59_110 = 110,
+    Cyan_66_111 = 111,Yellow_40_112 = 112,Lime_46_113 = 113,Teal_53_114 = 114,Teal_59_115 = 115,Teal_66_116 = 116,Cyan_73_117 = 117,Yellow_46_118 = 118,Lime_53_119 = 119,Teal_59_120 = 120,Teal_66_121 = 121,
+    Teal_73_122 = 122,Teal_79_123 = 123,Red_20_124 = 124,Magenta_26_125 = 125,Magenta_33_126 = 126,Magenta_40_127 = 127,Magenta_46_128 = 128,Magenta_53_129 = 129,Orange_26_130 = 130,Pink_33_131 = 131,
+    Pink_40_132 = 132, Pink_46_133 = 133,Purple_53_134 = 134,Purple_59_135 = 135,Orange_33_136 = 136,Orange_40_137 = 137,Pink_46_138 = 138,Pink_53_139 = 139,Purple_59_140 = 140,Purple_66_141 = 141,
+    Yellow_40_142 = 142, Orange_46_143 = 143,Orange_53_144 = 144,Grey_59_145 = 145,Cyan_66_146 = 146,Cyan_73_147 = 147,Yellow_46_148 = 148,Lime_53_149 = 149,Lime_59_150 = 150,Teal_66_151 = 151,Teal_73_152 = 152,
+    Cyan_79_153 = 153,Yellow_53_154 = 154, Lime_59_155 = 155,Lime_66_156 = 156,Teal_73_157 = 157,Teal_79_158 = 158,Teal_86_159 = 159,Red_26_160 = 160,Magenta_33_161 = 161,Magenta_40_162 = 162,Magenta_46_163 = 163,
+    Magenta_53_164 = 164,Magenta_59_165 = 165,Orange_33_166 = 166,Pink_40_167 = 167,Pink_46_168 = 168,Pink_53_169 = 169,Pink_59_170 = 170,Purple_66_171 = 171,Orange_40_172 = 172,Orange_46_173 = 173,
+    Pink_53_174 = 174,Pink_59_175 = 175,Pink_66_176 = 176,Purple_73_177 = 177,Orange_46_178 = 178,Orange_53_179 = 179,Orange_59_180 = 180,Pink_66_181 = 181,Pink_73_182 = 182,Purple_79_183 = 183,
+    Yellow_53_184 = 184,Orange_59_185 = 185,Orange_66_186 = 186,Orange_73_187 = 187,Grey_79_188 = 188,Cyan_86_189 = 189,Yellow_59_190 = 190,Lime_66_191 = 191,Lime_73_192 = 192,Lime_79_193 = 193,
+    Teal_86_194 = 194,Teal_92_195 = 195,Red_33_196 = 196,Magenta_40_197 = 197,Magenta_46_198 = 198,Magenta_53_199 = 199,Magenta_59_200 = 200,Magenta_66_201 = 201,Orange_40_202 = 202,Pink_46_203 = 203,
+    Pink_53_204 = 204, Pink_59_205 = 205,Pink_66_206 = 206,Pink_73_207 = 207,Orange_46_208 = 208,Orange_53_209 = 209,Pink_59_210 = 210,Pink_66_211 = 211,Pink_73_212 = 212,Pink_79_213 = 213,
+    Orange_53_214 = 214, Orange_59_215 = 215, Orange_66_216 = 216, Pink_73_217 = 217, Pink_79_218 = 218, Pink_86_219 = 219, Orange_59_220 = 220, Orange_66_221 = 221, Orange_73_222 = 222, Orange_79_223 = 223,
+    Pink_86_224 = 224,Pink_92_225 = 225,Yellow_66_226 = 226,Orange_73_227 = 227,Orange_79_228 = 228,Orange_86_229 = 229,Orange_92_230 = 230,White_99_231 = 231,Grey_00_232 = 232,Grey_04_233 = 233,Grey_09_234 = 234,
+    Grey_13_235 = 235,Grey_17_236 = 236,Grey_22_237 = 237,Grey_26_238 = 238,Grey_30_239 = 239,Grey_34_240 = 240,Grey_39_241 = 241,Grey_43_242 = 242,Grey_47_243 = 243,Grey_52_244 = 244,
+    Grey_56_245 = 245,Grey_60_246 = 246, Grey_65_247 = 247,Grey_69_248 = 248,Grey_73_249 = 249,Grey_77_250 = 250,Grey_82_251 = 251,Grey_86_252 = 252,Grey_90_253 = 253,Grey_95_254 = 254,Grey_99_255 = 255
 }
 
 // Vec3 
@@ -931,7 +708,8 @@ class Engine3D
         SceneObject.Tesseract(x:20, y:20, z:15, scaleX:-3f, scaleY:-3f, scaleZ:-3f,
                               color:Color.Purple_53_99, spinXW:3f, spinYW:3f),
 
-        new SceneObject(Mesh.kugel(), x:20 ,y:20 , z:20 , scaleX:1,scaleY:1,scaleZ:1,color: Color.Purple_53_134, rigidBody:true , mass:1f)
+        
+        new SceneObject(Mesh.kugel(), x:50 ,y:20 , z:0 , scaleX:1,scaleY:1,scaleZ:1,color: Color.Purple_53_134, rigidBody:true , mass:1f)
     };
 
     static readonly int StaticSceneCount = Scene.Count;
@@ -973,6 +751,8 @@ class Engine3D
     static float counter;
     static void GameLoop(float dt)
     {
+        
+
         // rigid body simulation runs first every frame pls dont remove
         Physics.StepRigidBodies(Scene, dt);
 
@@ -1019,7 +799,7 @@ class Engine3D
     {
         Console.OutputEncoding = Encoding.UTF8;
         Console.CursorVisible  = false;
-        StartInputThread();
+        RawInput.Start(Keys, KeyLock, s => { lock(KeyLock){ sprint = s; } });
         try { Console.SetWindowSize(W+4, H+6); } catch { }
         if (OperatingSystem.IsWindows())
             try { Console.SetBufferSize(W+4, H+10); } catch { }
@@ -1050,50 +830,173 @@ class Engine3D
         Console.ReadKey(true);
     }
 
-    static void StartInputThread()
+
+// N-key rollover input using /dev/input directly.
+// Replaces the Console.ReadKey polling loop entirely.
+
+
+
+
+public static class RawInput
+{
+    [StructLayout(LayoutKind.Sequential)]
+    struct InputEvent
     {
-        var t = new System.Threading.Thread(() =>
+        public long   tv_sec;
+        public long   tv_usec;
+        public ushort type;
+        public ushort code;
+        public int    value;
+    }
+ 
+    const ushort EV_KEY    = 1;
+    const int    KEY_PRESS = 1;
+ 
+    static readonly Dictionary<ushort, ConsoleKey> KeyMap = new()
+    {
+        [17]  = ConsoleKey.W,
+        [31]  = ConsoleKey.S,
+        [30]  = ConsoleKey.A,
+        [32]  = ConsoleKey.D,
+        [57]  = ConsoleKey.Spacebar,
+        [46]  = ConsoleKey.C,
+        [18]  = ConsoleKey.E,
+        [34]  = ConsoleKey.G,
+        [45]  = ConsoleKey.X,
+        [19]  = ConsoleKey.R,
+        [16]  = ConsoleKey.Q,
+        [1]   = ConsoleKey.Escape,
+        [105] = ConsoleKey.LeftArrow,
+        [106] = ConsoleKey.RightArrow,
+        [103] = ConsoleKey.UpArrow,
+        [108] = ConsoleKey.DownArrow,
+    };
+ 
+    static readonly HashSet<ushort> ShiftCodes = new() { 42, 54 };
+ 
+    public static bool Available { get; private set; } = false;
+ 
+    public static void Start(HashSet<ConsoleKey> keys, object keyLock, Action<bool> setSprint)
+    {
+        string? dev = "/dev/input/event7";
+        //string? dev = FindKeyboard();
+        if (dev == null)
         {
-            while (true)
+            //Console.Error.WriteLine("[RawInput] keyboard device not found");
+            return;
+        }
+ 
+        Available = true;
+        var t = new Thread(() =>
+        {
+            try
             {
-                long now = SW.ElapsedMilliseconds;
-                while (Console.KeyAvailable)
+                using var fs = new FileStream(dev, FileMode.Open,
+                                              FileAccess.Read, FileShare.ReadWrite);
+                int    evSize = Marshal.SizeOf<InputEvent>();
+                byte[] buf    = new byte[evSize];
+                bool   shift  = false;
+ 
+                //Console.Error.WriteLine($"[RawInput] opened {dev}, evSize={evSize}");
+ 
+                while (true)
                 {
-                    var k = Console.ReadKey(true);
-                    lock (KeyLock)
+                    int read = fs.Read(buf, 0, evSize);
+                    if (read < evSize) continue;
+ 
+                    var ev = MemoryMarshal.Read<InputEvent>(buf);
+ 
+                    if (ev.type == EV_KEY)
+                        //Console.Error.WriteLine($"[RawInput] type={ev.type} code={ev.code} value={ev.value}");
+ 
+                    if (ev.type != EV_KEY) continue;
+ 
+                    bool pressed = ev.value == KEY_PRESS;
+ 
+                    if (ShiftCodes.Contains(ev.code))
                     {
-                        KeysRaw.Add(k.Key);
-                        KeyTimestamps[k.Key] = now;
-                        if ((k.Modifiers & ConsoleModifiers.Shift) != 0)
-                            shiftRaw = true;
+                        shift = pressed;
+                        setSprint(shift);
+                        continue;
+                    }
+ 
+                    if (ev.value == 2) continue;
+                    if (!KeyMap.TryGetValue(ev.code, out var ck)) continue;
+ 
+                    lock (keyLock)
+                    {
+                        if (pressed) keys.Add(ck);
+                        else         keys.Remove(ck);
                     }
                 }
-                lock (KeyLock)
-                {
-                    var toRemove = new List<ConsoleKey>();
-                    foreach (var kv in KeyTimestamps)
-                        if (now - kv.Value > KEY_HOLD_MS) toRemove.Add(kv.Key);
-                    foreach (var k in toRemove) KeyTimestamps.Remove(k);
-                }
-                System.Threading.Thread.Sleep(1);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                //Console.Error.WriteLine(
+                    //$"[RawInput] Permission denied on {dev}.\n" +
+                    //$"Fix with:  sudo usermod -aG input $USER  then log out and back in.");
+                Available = false;
+            }
+            catch (Exception ex)
+            {
+                //Console.Error.WriteLine($"[RawInput] Error: {ex.Message}");
+                Available = false;
             }
         });
         t.IsBackground = true;
+        t.Name = "RawInput";
         t.Start();
     }
+ 
+    static string? FindKeyboard()
+    {
+        try
+        {
+            string info = File.ReadAllText("/proc/bus/input/devices");
+            string[] blocks = info.Split("\n\n", StringSplitOptions.RemoveEmptyEntries);
+            foreach (var block in blocks)
+            {
+                bool isKeyboard = false;
+                string eventDev = "";
+                foreach (var line in block.Split('\n'))
+                {
+                    if (!line.StartsWith("H: Handlers=")) continue;
+                    if (line.Contains("kbd")) isKeyboard = true;
+                    foreach (var token in line[12..].Split(' '))
+                        if (token.StartsWith("event"))
+                            eventDev = "/dev/input/" + token.Trim();
+                }
+                if (isKeyboard && eventDev != "")
+                    return eventDev;
+            }
+        }
+        catch { }
+ 
+        for (int i = 0; i < 20; i++)
+        {
+            string p = $"/dev/input/event{i}";
+            if (File.Exists(p)) return p;
+        }
+        return null;
+    }
+}
+
+
 
     static void PollKeys()
+{
+    if (RawInput.Available) return;
+
+    lock (KeyLock)
     {
-        lock (KeyLock)
-        {
-            Keys.Clear();
-            foreach (var k in KeyTimestamps.Keys) Keys.Add(k);
-            foreach (var k in KeysRaw) Keys.Add(k);
-            sprint   = shiftRaw;
-            shiftRaw = false;
-            KeysRaw.Clear();
-        }
+        Keys.Clear();
+        foreach (var k in KeyTimestamps.Keys) Keys.Add(k);
+        foreach (var k in KeysRaw) Keys.Add(k);
+        sprint   = shiftRaw;
+        shiftRaw = false;
+        KeysRaw.Clear();
     }
+}
 
     static void UpdateCamera(float dt)
     {
@@ -1301,151 +1204,151 @@ class Engine3D
 public static class Physics
 {
     const float Gravity = -18f;
-
+ 
     public static void StepRigidBodies(List<SceneObject> scene, float dt)
     {
-        // 1. Integrate forces → velocities → positions
-        foreach (var obj in scene)
+        const int SubSteps = 3;
+        float sdt = dt / SubSteps;
+ 
+        for (int step = 0; step < SubSteps; step++)
         {
-            var b = obj.Body;
-            if (b == null || !b.IsAwake) continue;
-
-            
-            Vec3 gravForce  = new Vec3(0, Gravity * b.Mass, 0);
-            b.AddForce(gravForce);
-
-       
-            Vec3 comOffset  = RotateByObject(obj, b.CenterOfMass);
-            Vec3 gravTorque = Vec3.Cross(comOffset, gravForce);
-            b.AddTorque(gravTorque);
-
-        
-            Vec3 accel       = b.Force * (1f / b.Mass);
-            b.LinearVelocity = b.LinearVelocity + accel * dt;
-            obj.Position     = obj.Position + b.LinearVelocity * dt;
-
-        
-            Vec3 angAccel     = new Vec3(
-                b.Torque.X / b.InertiaTensor.X,
-                b.Torque.Y / b.InertiaTensor.Y,
-                b.Torque.Z / b.InertiaTensor.Z);
-            b.AngularVelocity = b.AngularVelocity + angAccel * dt;
-            obj.RotX         += b.AngularVelocity.X * dt;
-            obj.RotY         += b.AngularVelocity.Y * dt;
-            obj.RotZ         += b.AngularVelocity.Z * dt;
-
-          
-            float angDamp     = MathF.Pow(0.97f, dt * 60f);
-            b.AngularVelocity = b.AngularVelocity * angDamp;
-
-            b.ClearAccumulators();
-        }
-
-        for (int i = 0; i < scene.Count; i++)
-        {
-            var a = scene[i];
-            if (a.Body == null || !a.Body.IsAwake) continue;
-
-            for (int k = 0; k < scene.Count; k++)
+            foreach (var obj in scene)
             {
-                if (i == k) continue;
-                var other = scene[k];
-
-                GetAABB(a,     out Vec3 amin, out Vec3 amax);
-                GetAABB(other, out Vec3 bmin, out Vec3 bmax);
-                if (!AABBPenetration(amin, amax, bmin, bmax, out Vec3 normal, out float depth))
-                    continue;
-
-                if (other.Body != null && !other.Body.IsAwake)
+                var b = obj.Body;
+                if (b == null || !b.IsAwake) continue;
+ 
+                Vec3 gravForce  = new Vec3(0, Gravity * b.Mass, 0);
+                b.AddForce(gravForce);
+ 
+                Vec3 comOffset  = RotateByObject(obj, b.CenterOfMass);
+                Vec3 gravTorque = Vec3.Cross(comOffset, gravForce);
+                b.AddTorque(gravTorque);
+ 
+                Vec3 accel       = b.Force * (1f / b.Mass);
+                b.LinearVelocity = b.LinearVelocity + accel * sdt;
+                obj.Position     = obj.Position + b.LinearVelocity * sdt;
+ 
+                Vec3 angAccel     = new Vec3(
+                    b.Torque.X / b.InertiaTensor.X,
+                    b.Torque.Y / b.InertiaTensor.Y,
+                    b.Torque.Z / b.InertiaTensor.Z);
+                b.AngularVelocity = b.AngularVelocity + angAccel * sdt;
+                obj.RotX         += b.AngularVelocity.X * sdt;
+                obj.RotY         += b.AngularVelocity.Y * sdt;
+                obj.RotZ         += b.AngularVelocity.Z * sdt;
+ 
+                float angDamp     = MathF.Pow(0.97f, sdt * 60f);
+                b.AngularVelocity = b.AngularVelocity * angDamp;
+ 
+                b.ClearAccumulators();
+            }
+ 
+            const int SolverIterations = 3;
+            for (int iter = 0; iter < SolverIterations; iter++)
+            {
+                for (int i = 0; i < scene.Count; i++)
                 {
-                    other.Body.IsAwake    = true;
-                    other.Body.SleepTimer = 0f;
+                    var a = scene[i];
+                    if (a.Body == null || !a.Body.IsAwake) continue;
+ 
+                    for (int k = 0; k < scene.Count; k++)
+                    {
+                        if (i == k) continue;
+                        var other = scene[k];
+ 
+                        GetAABB(a,     out Vec3 amin, out Vec3 amax);
+                        GetAABB(other, out Vec3 bmin, out Vec3 bmax);
+                        if (!AABBPenetration(amin, amax, bmin, bmax, out Vec3 normal, out float depth))
+                            continue;
+ 
+                        if (other.Body != null && !other.Body.IsAwake)
+                        {
+                            other.Body.IsAwake    = true;
+                            other.Body.SleepTimer = 0f;
+                        }
+ 
+                        bool otherDynamic = other.Body != null && other.Body.IsAwake;
+ 
+                        float invMA = 1f / a.Body.Mass;
+                        float invMB = otherDynamic ? 1f / other.Body!.Mass : 0f;
+                        float total = invMA + invMB;
+                        if (total > 0f)
+                        {
+                            float corrDepth = Math.Max(depth - 0.005f, 0f);
+                            a.Position = a.Position + normal * (corrDepth * invMA / total);
+                            if (otherDynamic)
+                                other.Position = other.Position - normal * (corrDepth * invMB / total);
+                        }
+ 
+                        Vec3 contactPt = DeepestVertex(a, normal * -1f);
+                        Vec3 comWorld  = a.Position + RotateByObject(a, a.Body.CenterOfMass);
+                        Vec3 rA        = contactPt - comWorld;
+ 
+                        Vec3 velAtContact = a.Body.LinearVelocity + Vec3.Cross(a.Body.AngularVelocity, rA);
+                        Vec3 velB         = otherDynamic ? other.Body!.LinearVelocity : new Vec3(0,0,0);
+                        float relVel      = Vec3.Dot(velAtContact - velB, normal);
+                        if (relVel > 0f) continue;
+ 
+                        float e = otherDynamic
+                            ? (a.Body.Restitution + other.Body!.Restitution) * 0.5f
+                            : a.Body.Restitution;
+                        if (MathF.Abs(relVel) < 2.0f) e = 0f;
+ 
+                        Vec3  rAxN     = Vec3.Cross(rA, normal);
+                        float angMassA = Vec3.Dot(rAxN, new Vec3(
+                            rAxN.X / a.Body.InertiaTensor.X,
+                            rAxN.Y / a.Body.InertiaTensor.Y,
+                            rAxN.Z / a.Body.InertiaTensor.Z));
+                        float impJ   = -(1f + e) * relVel / (invMA + invMB + angMassA);
+                        Vec3 impulse = normal * impJ;
+ 
+                        a.Body.LinearVelocity = a.Body.LinearVelocity + impulse * invMA;
+                        if (otherDynamic)
+                            other.Body!.LinearVelocity = other.Body.LinearVelocity - impulse * invMB;
+ 
+                        Vec3 torqueImp = Vec3.Cross(rA, impulse);
+                        a.Body.AngularVelocity = a.Body.AngularVelocity + new Vec3(
+                            torqueImp.X / a.Body.InertiaTensor.X,
+                            torqueImp.Y / a.Body.InertiaTensor.Y,
+                            torqueImp.Z / a.Body.InertiaTensor.Z);
+ 
+                        Vec3  tangent = (velAtContact - velB) - normal * relVel;
+                        float tLen    = MathF.Sqrt(Vec3.Dot(tangent, tangent));
+                        if (tLen > 1e-4f)
+                        {
+                            tangent = tangent * (1f / tLen);
+                            Vec3  rAxT     = Vec3.Cross(rA, tangent);
+                            float angMassT = Vec3.Dot(rAxT, new Vec3(
+                                rAxT.X / a.Body.InertiaTensor.X,
+                                rAxT.Y / a.Body.InertiaTensor.Y,
+                                rAxT.Z / a.Body.InertiaTensor.Z));
+                            float jt  = -Vec3.Dot(velAtContact - velB, tangent) / (invMA + invMB + angMassT);
+                            float mu  = a.Body.Friction * (otherDynamic ? other.Body!.Friction : 0.6f);
+                            jt = Math.Clamp(jt, -MathF.Abs(impJ) * mu, MathF.Abs(impJ) * mu);
+                            Vec3 ftImp = tangent * jt;
+                            a.Body.LinearVelocity  = a.Body.LinearVelocity  + ftImp * invMA;
+                            Vec3 ftTorque = Vec3.Cross(rA, ftImp);
+                            a.Body.AngularVelocity = a.Body.AngularVelocity + new Vec3(
+                                ftTorque.X / a.Body.InertiaTensor.X,
+                                ftTorque.Y / a.Body.InertiaTensor.Y,
+                                ftTorque.Z / a.Body.InertiaTensor.Z);
+                        }
+ 
+                        if (otherDynamic) other.Body!.IsAwake = true;
+                        a.Body.SleepTimer = 0f;
+                    }
                 }
-
-                bool otherDynamic = other.Body != null && other.Body.IsAwake;
-                float shareA = otherDynamic ? 0.5f : 1f;
-                float shareB = otherDynamic ? 0.5f : 0f;
-                a.Position = a.Position + normal * (depth * shareA);
-                if (otherDynamic)
-                    other.Position = other.Position - normal * (depth * shareB);
-
-          
-                Vec3 contactPt = DeepestVertex(a, normal * -1f);
-                Vec3 comWorld  = a.Position + RotateByObject(a, a.Body.CenterOfMass);
-                Vec3 rA        = contactPt - comWorld;
-
-             
-                Vec3 velAtContact = a.Body.LinearVelocity + Vec3.Cross(a.Body.AngularVelocity, rA);
-                Vec3 velB         = otherDynamic ? other.Body!.LinearVelocity : new Vec3(0,0,0);
-                float relVel      = Vec3.Dot(velAtContact - velB, normal);
-                if (relVel > 0f) continue;
-
-                float e    = otherDynamic
-                    ? (a.Body.Restitution + other.Body!.Restitution) * 0.5f
-                    : a.Body.Restitution;
-
-            
-                if (MathF.Abs(relVel) < 2.0f) e = 0f;
-
-             
-                Vec3  rAxN    = Vec3.Cross(rA, normal);
-                float angMassA = Vec3.Dot(rAxN, new Vec3(
-                    rAxN.X / a.Body.InertiaTensor.X,
-                    rAxN.Y / a.Body.InertiaTensor.Y,
-                    rAxN.Z / a.Body.InertiaTensor.Z));
-                float invMA  = 1f / a.Body.Mass;
-                float invMB  = otherDynamic ? 1f / other.Body!.Mass : 0f;
-                float impJ   = -(1f + e) * relVel / (invMA + invMB + angMassA);
-                Vec3 impulse = normal * impJ;
-
-         
-                a.Body.LinearVelocity = a.Body.LinearVelocity + impulse * invMA;
-                if (otherDynamic)
-                    other.Body!.LinearVelocity = other.Body.LinearVelocity - impulse * invMB;
-
-                Vec3 torqueImp = Vec3.Cross(rA, impulse);
-                a.Body.AngularVelocity = a.Body.AngularVelocity + new Vec3(
-                    torqueImp.X / a.Body.InertiaTensor.X,
-                    torqueImp.Y / a.Body.InertiaTensor.Y,
-                    torqueImp.Z / a.Body.InertiaTensor.Z);
-
-             
-                Vec3  tangent = (velAtContact - velB) - normal * relVel;
-                float tLen    = MathF.Sqrt(Vec3.Dot(tangent, tangent));
-                if (tLen > 1e-4f)
-                {
-                    tangent = tangent * (1f / tLen);
-                    Vec3  rAxT     = Vec3.Cross(rA, tangent);
-                    float angMassT = Vec3.Dot(rAxT, new Vec3(
-                        rAxT.X / a.Body.InertiaTensor.X,
-                        rAxT.Y / a.Body.InertiaTensor.Y,
-                        rAxT.Z / a.Body.InertiaTensor.Z));
-                    float jt  = -Vec3.Dot(velAtContact - velB, tangent) / (invMA + invMB + angMassT);
-                    float mu  = a.Body.Friction * (otherDynamic ? other.Body!.Friction : 0.6f);
-                    jt = Math.Clamp(jt, -MathF.Abs(impJ) * mu, MathF.Abs(impJ) * mu);
-                    Vec3 ftImp = tangent * jt;
-                    a.Body.LinearVelocity  = a.Body.LinearVelocity  + ftImp * invMA;
-                    Vec3 ftTorque = Vec3.Cross(rA, ftImp);
-                    a.Body.AngularVelocity = a.Body.AngularVelocity + new Vec3(
-                        ftTorque.X / a.Body.InertiaTensor.X,
-                        ftTorque.Y / a.Body.InertiaTensor.Y,
-                        ftTorque.Z / a.Body.InertiaTensor.Z);
-                }
-
-                if (otherDynamic) other.Body!.IsAwake = true;
-
-                a.Body.SleepTimer = 0f;
             }
         }
-
+ 
         foreach (var obj in scene)
         {
             var b = obj.Body;
             if (b == null || !b.IsAwake) continue;
-
+ 
             float spd2 = Vec3.Dot(b.LinearVelocity,  b.LinearVelocity);
             float ang2 = Vec3.Dot(b.AngularVelocity, b.AngularVelocity);
-
+ 
             if (spd2 < 0.04f && ang2 < 0.04f)
             {
                 b.SleepTimer += dt;
@@ -1459,10 +1362,11 @@ public static class Physics
             }
             else
             {
-                b.SleepTimer = 0f; // reset if moving again
+                b.SleepTimer = 0f;
             }
+        }
     }
-
+ 
     static Vec3 RotateByObject(SceneObject obj, Vec3 v)
     {
         if (obj.RotX!=0f){ float c=MathF.Cos(obj.RotX),s=MathF.Sin(obj.RotX); v=new(v.X,c*v.Y-s*v.Z,s*v.Y+c*v.Z); }
@@ -1470,8 +1374,7 @@ public static class Physics
         if (obj.RotZ!=0f){ float c=MathF.Cos(obj.RotZ),s=MathF.Sin(obj.RotZ); v=new(c*v.X-s*v.Y,s*v.X+c*v.Y,v.Z); }
         return v;
     }
-
-
+ 
     static Vec3 DeepestVertex(SceneObject obj, Vec3 direction)
     {
         Vec3  best  = obj.LocalToWorld(obj.Mesh.Verts[0]);
@@ -1483,8 +1386,8 @@ public static class Physics
             if (d > bestD) { bestD = d; best = w; }
         }
         return best;
-    }}
-    // ── Raycasting ───────────────────────────────────────────
+    }
+ 
     public static SceneObject? Raycast(
         Vec3 origin, Vec3 direction, float maxLength,
         IEnumerable<SceneObject> scene)
@@ -1500,7 +1403,7 @@ public static class Physics
         }
         return result;
     }
-
+ 
     public static bool RaycastOne(
         Vec3 origin, Vec3 direction, float maxLength,
         SceneObject obj, out float distance, out Vec3 hitPoint)
@@ -1511,14 +1414,14 @@ public static class Physics
         { hitPoint=origin+dir*distance; return true; }
         hitPoint=default; return false;
     }
-
+ 
     public static bool Overlaps(SceneObject a, SceneObject b)
     {
         GetAABB(a, out Vec3 amin, out Vec3 amax);
         GetAABB(b, out Vec3 bmin, out Vec3 bmax);
         return AABBOverlap(amin,amax,bmin,bmax);
     }
-
+ 
     public static bool OverlapAmount(SceneObject a, SceneObject b,
                                      out Vec3 normal, out float depth)
     {
@@ -1526,7 +1429,7 @@ public static class Physics
         GetAABB(b, out Vec3 bmin, out Vec3 bmax);
         return AABBPenetration(amin,amax,bmin,bmax,out normal,out depth);
     }
-
+ 
     public static List<(SceneObject a, SceneObject b)> CheckCollisions(
         IReadOnlyList<SceneObject> scene)
     {
@@ -1536,7 +1439,7 @@ public static class Physics
             if (Overlaps(scene[i],scene[j])) hits.Add((scene[i],scene[j]));
         return hits;
     }
-
+ 
     public static void ResolveCollision(SceneObject mover, IEnumerable<SceneObject> others)
     {
         foreach (var other in others)
@@ -1548,7 +1451,7 @@ public static class Physics
                 mover.Position=mover.Position+normal*depth;
         }
     }
-
+ 
     public static Vec3 MoveAndCollide(SceneObject mover, Vec3 velocity,
                                       float dt, IEnumerable<SceneObject> others)
     {
@@ -1574,7 +1477,7 @@ public static class Physics
         }
         return velocity;
     }
-
+ 
     public static void GetAABB(SceneObject obj, out Vec3 bmin, out Vec3 bmax)
     {
         float minX=float.MaxValue,minY=float.MaxValue,minZ=float.MaxValue;
@@ -1589,7 +1492,7 @@ public static class Physics
         bmin=new Vec3(minX,minY,minZ);
         bmax=new Vec3(maxX,maxY,maxZ);
     }
-
+ 
     static bool LocalSpacePenetration(SceneObject mover, SceneObject other,
                                        out Vec3 worldNormal, out float depth)
     {
@@ -1616,10 +1519,10 @@ public static class Physics
         worldNormal=n.Normalised();
         return true;
     }
-
+ 
     static bool AABBOverlap(Vec3 amin, Vec3 amax, Vec3 bmin, Vec3 bmax)
         => amin.X<=bmax.X&&amax.X>=bmin.X&&amin.Y<=bmax.Y&&amax.Y>=bmin.Y&&amin.Z<=bmax.Z&&amax.Z>=bmin.Z;
-
+ 
     static bool AABBPenetration(Vec3 amin, Vec3 amax, Vec3 bmin, Vec3 bmax,
                                  out Vec3 normal, out float depth)
     {
@@ -1635,7 +1538,7 @@ public static class Physics
         else { depth=oz; normal=new Vec3(0f,0f,ac.Z>bc.Z?1f:-1f); }
         return true;
     }
-
+ 
     static bool RayAABB(Vec3 ro, Vec3 rd, Vec3 bmin, Vec3 bmax, out float dist)
     {
         dist=0f;
@@ -1650,11 +1553,8 @@ public static class Physics
         if (tmax<0f||tmin>tmax) return false;
         dist=tmin>=0f?tmin:tmax;
         return true;
-    }  
-  }
-
-
-
+    }
+}
 public class Gametest
 {
     public static double rampL(double leng, double heig)
