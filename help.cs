@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-using System.Collections.Generic;
+
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -146,7 +146,7 @@ public class Mesh
 
 
 
-    public static Mesh  kugel() => RandomAhhhMeshshit.GenerateSphereMesh(40,40,5f);
+    public static Mesh kugel() => RandomAhhhMeshshit.GenerateSphereMesh(16, 16, 5f);
 
     
 
@@ -253,6 +253,10 @@ public class Tesseract4D
 //SceneObject
 public class SceneObject
 {
+public Vec3 CachedMin, CachedMax;
+public bool AabbDirty = true;
+public void MarkDirty() => AabbDirty = true;
+
     public Vec3        Position;
     public Vec3        Scale;
     public float       RotX, RotY, RotZ;
@@ -347,6 +351,8 @@ public class SceneObject
 //Engine
 class Engine3D
 {
+    static readonly Stream Stdout = Console.OpenStandardOutput();
+
     const int W = 755;
     const int H = 145;
 
@@ -706,7 +712,7 @@ class Engine3D
 
         
         SceneObject.Tesseract(x:20, y:20, z:15, scaleX:-3f, scaleY:-3f, scaleZ:-3f,
-                              color:Color.Purple_53_99, spinXW:3f, spinYW:3f),
+                              color:Color.Purple_53_99, spinXW:1f, spinYW:1f),
 
         
         new SceneObject(Mesh.kugel(), x:50 ,y:20 , z:0 , scaleX:1,scaleY:1,scaleZ:1,color: Color.Purple_53_134, rigidBody:true , mass:1f)
@@ -797,13 +803,16 @@ class Engine3D
 
     static void Main()
     {
+        //System.Diagnostics.Process.Start("xdotool", "mousemove 99999 99999");
+        
         Console.OutputEncoding = Encoding.UTF8;
-        Console.CursorVisible  = false;
-        RawInput.Start(Keys, KeyLock, s => { lock(KeyLock){ sprint = s; } });
-        try { Console.SetWindowSize(W+4, H+6); } catch { }
-        if (OperatingSystem.IsWindows())
-            try { Console.SetBufferSize(W+4, H+10); } catch { }
-        Console.Clear();
+    Console.CursorVisible  = false;
+    Console.Write("\x1b[?25l"); // hide terminal cursor
+    RawInput.Start(Keys, KeyLock, s => { lock(KeyLock){ sprint = s; } });
+    try { Console.SetWindowSize(W+4, H+6); } catch { }
+    if (OperatingSystem.IsWindows())
+        try { Console.SetBufferSize(W+4, H+10); } catch { }
+    Console.Clear();
 
         while (true)
         {
@@ -823,11 +832,12 @@ class Engine3D
         }
 
         Console.Write(ColReset);
-        Console.CursorVisible = true;
-        Console.Clear();
-        PrintGeneratedObjects();
-        Console.WriteLine("\nGoodbye. Press any key to exit.");
-        Console.ReadKey(true);
+    Console.Write("\x1b[?25h"); // restore terminal cursor
+    Console.CursorVisible = true;
+    Console.Clear();
+    PrintGeneratedObjects();
+    Console.WriteLine("\nGoodbye. Press any key to exit.");
+    Console.ReadKey(true);
     }
 
 
@@ -839,6 +849,10 @@ class Engine3D
 
 public static class RawInput
 {
+    public static float MouseDX = 0f;
+    public static float MouseDY = 0f;
+    public static readonly object MouseLock = new();
+
     [StructLayout(LayoutKind.Sequential)]
     struct InputEvent
     {
@@ -848,10 +862,13 @@ public static class RawInput
         public ushort code;
         public int    value;
     }
- 
+
     const ushort EV_KEY    = 1;
     const int    KEY_PRESS = 1;
- 
+    const ushort EV_REL    = 2;
+    const ushort REL_X     = 0;
+    const ushort REL_Y     = 1;
+
     static readonly Dictionary<ushort, ConsoleKey> KeyMap = new()
     {
         [17]  = ConsoleKey.W,
@@ -871,22 +888,20 @@ public static class RawInput
         [103] = ConsoleKey.UpArrow,
         [108] = ConsoleKey.DownArrow,
     };
- 
+
     static readonly HashSet<ushort> ShiftCodes = new() { 42, 54 };
- 
+
     public static bool Available { get; private set; } = false;
- 
+
     public static void Start(HashSet<ConsoleKey> keys, object keyLock, Action<bool> setSprint)
     {
         string? dev = "/dev/input/event7";
         //string? dev = FindKeyboard();
-        if (dev == null)
-        {
-            //Console.Error.WriteLine("[RawInput] keyboard device not found");
-            return;
-        }
- 
+        if (dev == null) return;
+
         Available = true;
+
+        // keyboard thread
         var t = new Thread(() =>
         {
             try
@@ -896,33 +911,37 @@ public static class RawInput
                 int    evSize = Marshal.SizeOf<InputEvent>();
                 byte[] buf    = new byte[evSize];
                 bool   shift  = false;
- 
-                //Console.Error.WriteLine($"[RawInput] opened {dev}, evSize={evSize}");
- 
+
                 while (true)
                 {
                     int read = fs.Read(buf, 0, evSize);
                     if (read < evSize) continue;
- 
+
                     var ev = MemoryMarshal.Read<InputEvent>(buf);
- 
-                    if (ev.type == EV_KEY)
-                        //Console.Error.WriteLine($"[RawInput] type={ev.type} code={ev.code} value={ev.value}");
- 
+
+                    if (ev.type == EV_REL)
+                    {
+                        lock (MouseLock)
+                        {
+                            if (ev.code == REL_X) MouseDX += ev.value;
+                            if (ev.code == REL_Y) MouseDY += ev.value;
+                        }
+                        continue;
+                    }
                     if (ev.type != EV_KEY) continue;
- 
+
                     bool pressed = ev.value == KEY_PRESS;
- 
+
                     if (ShiftCodes.Contains(ev.code))
                     {
                         shift = pressed;
                         setSprint(shift);
                         continue;
                     }
- 
+
                     if (ev.value == 2) continue;
                     if (!KeyMap.TryGetValue(ev.code, out var ck)) continue;
- 
+
                     lock (keyLock)
                     {
                         if (pressed) keys.Add(ck);
@@ -930,24 +949,73 @@ public static class RawInput
                     }
                 }
             }
-            catch (UnauthorizedAccessException)
-            {
-                //Console.Error.WriteLine(
-                    //$"[RawInput] Permission denied on {dev}.\n" +
-                    //$"Fix with:  sudo usermod -aG input $USER  then log out and back in.");
-                Available = false;
-            }
-            catch (Exception ex)
-            {
-                //Console.Error.WriteLine($"[RawInput] Error: {ex.Message}");
-                Available = false;
-            }
+            catch (UnauthorizedAccessException) { Available = false; }
+            catch (Exception)                   { Available = false; }
         });
         t.IsBackground = true;
         t.Name = "RawInput";
         t.Start();
+
+        // mouse thread
+        string? mouseDev = "/dev/input/event8";
+        //FindMouse();
+        if (mouseDev != null)
+        {
+            var mt = new Thread(() =>
+            {
+                try
+                {
+                    using var fs = new FileStream(mouseDev, FileMode.Open,
+                                                  FileAccess.Read, FileShare.ReadWrite);
+                    int    evSize = Marshal.SizeOf<InputEvent>();
+                    byte[] buf    = new byte[evSize];
+                    while (true)
+                    {
+                        int read = fs.Read(buf, 0, evSize);
+                        if (read < evSize) continue;
+                        var ev = MemoryMarshal.Read<InputEvent>(buf);
+                        if (ev.type == EV_REL)
+                        {
+                            lock (MouseLock)
+                            {
+                                if (ev.code == REL_X) MouseDX += ev.value;
+                                if (ev.code == REL_Y) MouseDY += ev.value;
+                            }
+                        }
+                    }
+                }
+                catch { }
+            });
+            mt.IsBackground = true;
+            mt.Name = "RawMouse";
+            mt.Start();
+        }
     }
- 
+
+    static string? FindMouse()
+    {
+        try
+        {
+            string info = File.ReadAllText("/proc/bus/input/devices");
+            string[] blocks = info.Split("\n\n", StringSplitOptions.RemoveEmptyEntries);
+            foreach (var block in blocks)
+            {
+                bool isMouse = block.Contains("mouse") || block.Contains("Mouse");
+                string eventDev = "";
+                foreach (var line in block.Split('\n'))
+                {
+                    if (!line.StartsWith("H: Handlers=")) continue;
+                    foreach (var token in line[12..].Split(' '))
+                        if (token.StartsWith("event"))
+                            eventDev = "/dev/input/" + token.Trim();
+                }
+                if (isMouse && eventDev != "") return eventDev;
+            }
+        }
+        catch { }
+        return null;
+    }
+
     static string? FindKeyboard()
     {
         try
@@ -966,12 +1034,11 @@ public static class RawInput
                         if (token.StartsWith("event"))
                             eventDev = "/dev/input/" + token.Trim();
                 }
-                if (isKeyboard && eventDev != "")
-                    return eventDev;
+                if (isKeyboard && eventDev != "") return eventDev;
             }
         }
         catch { }
- 
+
         for (int i = 0; i < 20; i++)
         {
             string p = $"/dev/input/event{i}";
@@ -1004,6 +1071,15 @@ public static class RawInput
         const float speed   = 6f;
         const float gravity = -18f;
 
+        float mdx, mdy;
+    lock (RawInput.MouseLock)
+    {
+        mdx = RawInput.MouseDX;
+        mdy = RawInput.MouseDY;
+        RawInput.MouseDX = 0f;
+        RawInput.MouseDY = 0f;
+    }
+
         if (Keys.Contains(ConsoleKey.LeftArrow))  yaw  -= look*dt;
         if (Keys.Contains(ConsoleKey.RightArrow)) yaw  += look*dt;
         if (Keys.Contains(ConsoleKey.UpArrow))
@@ -1014,6 +1090,11 @@ public static class RawInput
         float fwdX=MathF.Sin(yaw), fwdZ=MathF.Cos(yaw);
         float rgtX=fwdZ,           rgtZ=-fwdX;
         float spd=sprint?speed*2f:speed;
+        const float MouseSens = 0.0015f;
+        yaw   += mdx * MouseSens;
+        pitch  = Math.Clamp(pitch + mdy * MouseSens, -1.45f, 1.45f);
+
+        
 
         float moveX=0f, moveZ=0f;
         if (Keys.Contains(ConsoleKey.W)) { moveX+=fwdX*spd; moveZ+=fwdZ*spd; }
@@ -1156,39 +1237,43 @@ public static class RawInput
     }
 
     static void Flush(float dt)
+{
+    var sb = new StringBuilder((W+5)*(H+5)*16);
+    sb.Append($"  pos({camX:F1},{camY:F1},{camZ:F1})  yaw:{yaw*57.3f:F0}  pitch:{pitch*57.3f:F0}  fps:{(dt>0?1/dt:0):F0}   \n");
+    sb.Append("  wasd=move  arrows=look  space/c=fly  shift=sprint  r=reset  q=quit   \n");
+    sb.Append("  +"); sb.Append(new string('-',W)); sb.Append("+\n");
+    string lastEsc = "";
+    for (int row=0; row<H; row++)
     {
-        var sb=new StringBuilder((W+5)*(H+5)*16);
-        sb.Append($"  pos({camX:F1},{camY:F1},{camZ:F1})  yaw:{yaw*57.3f:F0}  pitch:{pitch*57.3f:F0}  fps:{(dt>0?1/dt:0):F0}   \n");
-        sb.Append("  wasd=move  arrows=look  space/c=fly  shift=sprint  r=reset  q=quit   \n");
-        sb.Append("  +"); sb.Append(new string('-',W)); sb.Append("+\n");
-        string lastEsc="";
-        for (int row=0; row<H; row++)
+        sb.Append("  |");
+        for (int col=0; col<W; col++)
         {
-            sb.Append("  |");
-            for (int col=0; col<W; col++)
+            int cell = CB[row*W+col];
+            if (cell == 0)
             {
-                int cell=CB[row*W+col];
-                if (cell==0)
-                {
-                    if (lastEsc!="") { sb.Append(ColReset); lastEsc=""; }
-                    sb.Append(' ');
-                }
-                else
-                {
-                    int colorId=cell>>3;
-                    int shade=Math.Clamp(cell&0x7,1,4);
-                    string esc=ColourRamps[colorId][shade-1];
-                    if (esc!=lastEsc) { sb.Append(esc); lastEsc=esc; }
-                    sb.Append(Blocks[shade]);
-                }
+                if (lastEsc != "") { sb.Append(ColReset); lastEsc=""; }
+                sb.Append(' ');
             }
-            if (lastEsc!="") { sb.Append(ColReset); lastEsc=""; }
-            sb.Append("|\n");
+            else
+            {
+                int    colorId = cell >> 3;
+                int    shade   = Math.Clamp(cell & 0x7, 1, 4);
+                string esc     = ColourRamps[colorId][shade-1];
+                if (esc != lastEsc) { sb.Append(esc); lastEsc=esc; }
+                sb.Append(Blocks[shade]);
+            }
         }
-        sb.Append("  +"); sb.Append(new string('-',W)); sb.Append("+");
-        Console.SetCursorPosition(0,0);
-        Console.Write(sb);
+        if (lastEsc != "") { sb.Append(ColReset); lastEsc=""; }
+        sb.Append("|\n");
     }
+    sb.Append("  +"); sb.Append(new string('-',W)); sb.Append("+");
+
+    // CHANGE: write bytes directly — avoids Console.Write's internal locking + encoding overhead
+    Console.SetCursorPosition(0, 0);
+    byte[] bytes = Encoding.UTF8.GetBytes(sb.ToString());
+    Stdout.Write(bytes, 0, bytes.Length);
+    Stdout.Flush();
+}
 
     static Vec3 CameraForward()
     {
@@ -1453,45 +1538,47 @@ public static class Physics
     }
  
     public static Vec3 MoveAndCollide(SceneObject mover, Vec3 velocity,
-                                      float dt, IEnumerable<SceneObject> others)
+                                  float dt, IEnumerable<SceneObject> others)
     {
-        mover.Position=mover.Position+velocity*dt;
-        foreach (var other in others)
+    mover.Position = mover.Position + velocity * dt;  mover.MarkDirty();
+    foreach (var other in others)
+    {
+        if (ReferenceEquals(mover, other)) continue;
+        bool hasRot = other.RotX!=0f || other.RotY!=0f || other.RotZ!=0f;
+        Vec3 normal; float depth;
+        if (!hasRot)
         {
-            if (ReferenceEquals(mover,other)) continue;
-            bool hasRot=other.RotX!=0f||other.RotY!=0f||other.RotZ!=0f;
-            Vec3 normal; float depth;
-            if (!hasRot)
-            {
-                GetAABB(mover, out Vec3 mmin, out Vec3 mmax);
-                GetAABB(other, out Vec3 omin, out Vec3 omax);
-                if (!AABBPenetration(mmin,mmax,omin,omax,out normal,out depth)) continue;
-            }
-            else
-            {
-                if (!LocalSpacePenetration(mover,other,out normal,out depth)) continue;
-            }
-            mover.Position=mover.Position+normal*depth;
-            float vDotN=Vec3.Dot(velocity,normal);
-            if (vDotN<0f) velocity=velocity-normal*vDotN;
+            GetAABB(mover, out Vec3 mmin, out Vec3 mmax);
+            GetAABB(other, out Vec3 omin, out Vec3 omax);
+            if (!AABBPenetration(mmin,mmax,omin,omax,out normal,out depth)) continue;
         }
-        return velocity;
+        else
+        {
+            if (!LocalSpacePenetration(mover,other,out normal,out depth)) continue;
+        }
+        mover.Position = mover.Position + normal * depth;  mover.MarkDirty();
+        float vDotN = Vec3.Dot(velocity, normal);
+        if (vDotN < 0f) velocity = velocity - normal * vDotN;
+    }
+    return velocity;
     }
  
     public static void GetAABB(SceneObject obj, out Vec3 bmin, out Vec3 bmax)
+{
+    if (!obj.AabbDirty) { bmin = obj.CachedMin; bmax = obj.CachedMax; return; }
+    float minX=float.MaxValue,minY=float.MaxValue,minZ=float.MaxValue;
+    float maxX=float.MinValue,maxY=float.MinValue,maxZ=float.MinValue;
+    foreach (var v in obj.Mesh.Verts)
     {
-        float minX=float.MaxValue,minY=float.MaxValue,minZ=float.MaxValue;
-        float maxX=float.MinValue,maxY=float.MinValue,maxZ=float.MinValue;
-        foreach (var v in obj.Mesh.Verts)
-        {
-            Vec3 w=obj.LocalToWorld(v);
-            if (w.X<minX) minX=w.X; if (w.X>maxX) maxX=w.X;
-            if (w.Y<minY) minY=w.Y; if (w.Y>maxY) maxY=w.Y;
-            if (w.Z<minZ) minZ=w.Z; if (w.Z>maxZ) maxZ=w.Z;
-        }
-        bmin=new Vec3(minX,minY,minZ);
-        bmax=new Vec3(maxX,maxY,maxZ);
+        Vec3 w = obj.LocalToWorld(v);
+        if (w.X<minX) minX=w.X; if (w.X>maxX) maxX=w.X;
+        if (w.Y<minY) minY=w.Y; if (w.Y>maxY) maxY=w.Y;
+        if (w.Z<minZ) minZ=w.Z; if (w.Z>maxZ) maxZ=w.Z;
     }
+    obj.CachedMin = bmin = new Vec3(minX,minY,minZ);
+    obj.CachedMax = bmax = new Vec3(maxX,maxY,maxZ);
+    obj.AabbDirty = false;
+}
  
     static bool LocalSpacePenetration(SceneObject mover, SceneObject other,
                                        out Vec3 worldNormal, out float depth)
