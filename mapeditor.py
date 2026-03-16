@@ -40,12 +40,12 @@ class SceneObject:
     def __init__(self, mesh, x=0, y=0, z=5,
                  rotX=0, rotY=0, rotZ=0,
                  sx=1, sy=1, sz=1,
-                 rigid=False, mass=1, dynamic=False):
+                 rigidBody=False, mass=1, dynamic=False):
         self.mesh = mesh
         self.x = x; self.y = y; self.z = z
         self.rotX = rotX; self.rotY = rotY; self.rotZ = rotZ
         self.sx = sx; self.sy = sy; self.sz = sz
-        self.rigid = rigid; self.mass = mass
+        self.rigidBody = rigidBody; self.mass = mass
         self.dynamic = dynamic
         self.color = (200,200,200)
 
@@ -145,6 +145,9 @@ def project(v):
 cube_v = [(-1,-1,-1),(1,-1,-1),(1,1,-1),(-1,1,-1),(-1,-1,1),(1,-1,1),(1,1,1),(-1,1,1)]
 cube_e = [(0,1),(1,2),(2,3),(3,0),(4,5),(5,6),(6,7),(7,4),(0,4),(1,5),(2,6),(3,7)]
 
+def invert_color(color):
+    return (255-color[0], 255-color[1], 255-color[2])
+
 # =====================
 # Scene helper functions
 # =====================
@@ -177,8 +180,10 @@ def draw_obj(o, is_selected=False):
         x,y = x*math.cos(rz)-y*math.sin(rz), x*math.sin(rz)+y*math.cos(rz)
         x += o.x; y += o.y; z += o.z
         verts.append(project((x,y,z)))
+    draw_color = invert_color(o.color) if is_selected else o.color
+
     for edge in e:
-        pygame.draw.line(screen, o.color, verts[edge[0]], verts[edge[1]], 1)
+        pygame.draw.line(screen, draw_color, verts[edge[0]], verts[edge[1]], 1)
 
     if is_selected:
         xs = [v[0] for v in verts]
@@ -196,7 +201,7 @@ def build_sidebar(obj):
         InputField("rotX", obj.rotX, 150), InputField("rotY", obj.rotY, 180), InputField("rotZ", obj.rotZ, 210),
         InputField("scaleX", obj.sx, 260), InputField("scaleY", obj.sy, 290), InputField("scaleZ", obj.sz, 320),
         InputField("mass", obj.mass, 380),
-        CheckBox("RigidBody", obj.rigid, 430),
+        CheckBox("RigidBody", obj.rigidBody, 430),
         CheckBox("Dynamic", obj.dynamic, 460)
     ]
 
@@ -206,7 +211,7 @@ def apply_fields(obj, fields):
         obj.rotX = float(fields[3].value); obj.rotY = float(fields[4].value); obj.rotZ = float(fields[5].value)
         obj.sx = float(fields[6].value); obj.sy = float(fields[7].value); obj.sz = float(fields[8].value)
         obj.mass = float(fields[9].value)
-        obj.rigid = fields[10].value
+        obj.rigidBody = fields[10].value
         obj.dynamic = fields[11].value
     except: pass
 
@@ -233,8 +238,8 @@ def object_at_mouse(scene, mouse_pos):
 
 
 def export_scene(scene, filename="scene_export.txt"):
-    standard_colors = ["Black","Maroon","DarkGreen","Olive","Navy","Purple","Teal","Silver",
-                       "Grey","Red","Lime","Yellow","Blue","Fuchsia","Aqua","White"]
+    standard_colors = ["Color.Black","Color.Maroon","Color.DarkGreen","Color.Olive","Color.Navy","Color.Purple","Color.Teal","Color.Silver",
+                       "Color.Grey","Color.Red","Color.Lime","Color.Yellow","Color.Blue","Color.Fuchsia","Color.Aqua","Color.White"]
     with open(filename,"w") as f:
         for o in scene:
             # Color
@@ -250,23 +255,25 @@ def export_scene(scene, filename="scene_export.txt"):
             mesh_cs = mesh_map.get(o.mesh, "Mesh.Unknown()")
 
             # Rigid & Mass
-            rigid_str = "true" if o.rigid else "false"
+            rigidBody_str = "true" if o.rigidBody else "false"
             mass_str = f"{o.mass}f"
 
             # Rotations
-            rotX_str = f"{o.rotX}*SceneObject.Deg(1)" if o.dynamic else str(o.rotX)
-            rotY_str = f"{o.rotY}*SceneObject.Deg(1)" if o.dynamic else str(o.rotY)
-            rotZ_str = f"{o.rotZ}*SceneObject.Deg(1)" if o.dynamic else str(o.rotZ)
+            rotX_str = f"{o.rotX}f*SceneObject.Deg(1)" if o.dynamic else f"{o.rotX}f"
+            rotY_str = f"{o.rotY}f*SceneObject.Deg(1)" if o.dynamic else f"{o.rotY}f"
+            rotZ_str = f"{o.rotZ}f*SceneObject.Deg(1)" if o.dynamic else f"{o.rotZ}f"
 
             # Position & Scale
-            x = round(o.x,2); y = round(o.y,2); z = round(o.z,2)
+            x = f"{round(o.x,2)}f"
+            y = f"{round(o.y,2)}f"
+            z = f"{round(o.z,2)}f"
             sx = round(o.sx,2); sy = round(o.sy,2); sz = round(o.sz,2)
 
             line = (
                 f"new SceneObject({mesh_cs}, x:{x}, y:{y}, z:{z}, color: {color_name}, "
                 f"scaleX:{sx}f, scaleY:{sy}f, scaleZ:{sz}f, "
                 f"rotX:{rotX_str}, rotY:{rotY_str}, rotZ:{rotZ_str}, "
-                f"rigid:{rigid_str}, mass:{mass_str}),\n"
+                f"rigidBody:{rigidBody_str}, mass:{mass_str}),\n"
             )
             f.write(line)
     print(f"Scene exported to {filename}")
@@ -277,47 +284,76 @@ def export_scene(scene, filename="scene_export.txt"):
 def load_scene_txt(filename="scene_export.txt"):
     scene = []
     pattern = re.compile(
-        r"new SceneObject\(\s*(Mesh\.(\w+)\(\))\s*,\s*"
-        r"x:\s*([-\d.]+)\s*,\s*y:\s*([-\d.]+)\s*,\s*z:\s*([-\d.]+)"
-        r"(?:,\s*color:\s*Color\.(\w+))?"
-        r"(?:,\s*scaleX:\s*([-\d.]+)f?,\s*scaleY:\s*([-\d.]+)f?,\s*scaleZ:\s*([-\d.]+)f?)?"
-        r"(?:,\s*rotX:\s*([-\d.*SceneObjectDeg1]+))?"
-        r"(?:,\s*rotY:\s*([-\d.*SceneObjectDeg1]+))?"
-        r"(?:,\s*rotZ:\s*([-\d.*SceneObjectDeg1]+))?"
-        r"(?:,\s*rigid(?:Body)?:\s*(true|false))?"
-        r"(?:,\s*mass:\s*([-\d.]+)f?)?"
-        r"\)"
+        r"new SceneObject\("
+        r"\s*(?:Mesh\.)?(\w+)\(\)"           # mesh name
+        r",\s*x:\s*([-\d.]+)f?"              # x
+        r",\s*y:\s*([-\d.]+)f?"              # y
+        r",\s*z:\s*([-\d.]+)f?"              # z
+        r"(?:,\s*color:\s*Color\.(\w+))?"    # color
+        r"(?:,\s*scaleX:\s*([-\d.]+)f?"      # scaleX
+        r",\s*scaleY:\s*([-\d.]+)f?"         # scaleY
+        r",\s*scaleZ:\s*([-\d.]+)f?)?"       # scaleZ
+        r"(?:,\s*rotX:\s*([-\d.]+)f?)?"      # rotX
+        r"(?:,\s*rotY:\s*([-\d.]+)f?)?"      # rotY
+        r"(?:,\s*rotZ:\s*([-\d.]+)f?)?"      # rotZ
+        r"(?:,\s*rigidBody:\s*(true|false))?" # rigidBody
+        r"(?:,\s*mass:\s*([-\d.]+)f?)?"      # mass
     )
 
-    for line in open(filename, "r"):
+    try:
+        lines = open(filename, "r").readlines()
+    except FileNotFoundError:
+        print(f"File not found: {filename}")
+        return scene
+
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith("//"):
+            continue
         match = pattern.search(line)
-        if match:
-            mesh_full, mesh_name, x, y, z, color, sx, sy, sz, rotX, rotY, rotZ, rigid, mass = match.groups()
-            x, y, z = float(x), float(y), float(z)
-            sx = float(sx) if sx else 1
-            sy = float(sy) if sy else 1
-            sz = float(sz) if sz else 1
-            rotX = rotX.strip() if rotX else "0"
-            rotY = rotY.strip() if rotY else "0"
-            rotZ = rotZ.strip() if rotZ else "0"
-            dynamic = False
-            if "*SceneObject.Deg(1)" in rotX: rotX = rotX.replace("*SceneObject.Deg(1)",""); dynamic = True
-            if "*SceneObject.Deg(1)" in rotY: rotY = rotY.replace("*SceneObject.Deg(1)",""); dynamic = True
-            if "*SceneObject.Deg(1)" in rotZ: rotZ = rotZ.replace("*SceneObject.Deg(1)",""); dynamic = True
-            rotX = float(rotX); rotY = float(rotY); rotZ = float(rotZ)
-            rigid = True if rigid=="true" else False
-            mass = float(mass) if mass else 1
-            color_name = color if color else "White"
-            color_rgb = ColorMap256.get(color_name, (200,200,200))
-            obj = SceneObject(
-                mesh_name, x=x, y=y, z=z,
-                sx=sx, sy=sy, sz=sz,
-                rotX=rotX, rotY=rotY, rotZ=rotZ,
-                rigid=rigid, mass=mass,
-                dynamic=dynamic
-            )
-            obj.color = color_rgb
-            scene.append(obj)
+        if not match:
+            continue
+
+        (mesh_name, x, y, z, color,
+         sx, sy, sz,
+         rotX, rotY, rotZ,
+         rigidBody, mass) = match.groups()
+
+        x     = float(x)     if x     else 0.0
+        y     = float(y)     if y     else 0.0
+        z     = float(z)     if z     else 0.0
+        sx    = float(sx)    if sx    else 1.0
+        sy    = float(sy)    if sy    else 1.0
+        sz    = float(sz)    if sz    else 1.0
+        rotX  = float(rotX)  if rotX  else 0.0
+        rotY  = float(rotY)  if rotY  else 0.0
+        rotZ  = float(rotZ)  if rotZ  else 0.0
+        mass  = float(mass)  if mass  else 1.0
+        rigidBody = rigidBody == "true"
+
+        color_name = color if color else "White"
+        # handle "ColorUnknown" -> fallback to white
+        if color_name == "ColorUnknown":
+            color_name = "White"
+        color_rgb = ColorMap256.get(color_name, (200, 200, 200))
+
+        # normalize mesh name
+        mesh_map = {
+            "Cube": "Cube", "Pyramid": "Pyramid",
+            "Plane": "Plane", "kugel": "Sphere"
+        }
+        mesh = mesh_map.get(mesh_name, mesh_name)
+
+        obj = SceneObject(
+            mesh, x=x, y=y, z=z,
+            sx=sx, sy=sy, sz=sz,
+            rotX=rotX, rotY=rotY, rotZ=rotZ,
+            rigidBody=rigidBody, mass=mass
+        )
+        obj.color = color_rgb
+        scene.append(obj)
+
+    print(f"Loaded {len(scene)} objects from {filename}")
     return scene
 
 # =====================
@@ -411,8 +447,12 @@ while running:
     if scene: apply_fields(scene[selected], fields)
 
     # Draw
+    # Draw
     screen.fill((20,20,30))
-    for o in scene: draw_obj(o)
+
+    for i, o in enumerate(scene):
+        draw_obj(o, i == selected)
+
     if scene:
         draw_sidebar(scene[selected], fields)
         palette.draw(screen)
