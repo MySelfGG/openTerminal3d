@@ -15,32 +15,44 @@ using System.Threading;
 
 //Color enum 
 
+
+
 public enum Color {
-    Black = 0,Maroon = 1,DarkGreen = 2,Olive = 3,Navy = 4,Purple = 5,Teal = 6,Silver = 7,Grey = 8,Red = 9,
-    Lime = 10,Yellow = 11,Blue = 12,Fuchsia = 13,Aqua = 14,White = 15,Black_00_16 = 16,Blue_07_17 = 17,Blue_13_18 = 18,Blue_20_19 = 19,
-    Blue_26_20 = 20,Blue_33_21 = 21,Green_07_22 = 22,Cyan_13_23 = 23,Azure_20_24 = 24,Azure_26_25 = 25,Azure_33_26 = 26,Azure_40_27 = 27,Green_13_28 = 28,Cyan_20_29 = 29,
-    Cyan_26_30 = 30,Azure_33_31 = 31,Azure_40_32 = 32,Azure_46_33 = 33,Green_20_34 = 34,Cyan_26_35 = 35,Cyan_33_36 = 36,Cyan_40_37 = 37,Azure_46_38 = 38,Azure_53_39 = 39,Green_26_40 = 40,
-    Cyan_33_41 = 41,Cyan_40_42 = 42,Cyan_46_43 = 43,Cyan_53_44 = 44,Azure_59_45 = 45,Green_33_46 = 46,Cyan_40_47 = 47,Cyan_46_48 = 48,Cyan_53_49 = 49,Cyan_59_50 = 50,
-    Cyan_66_51 = 51,Red_07_52 = 52,Magenta_13_53 = 53,Magenta_20_54 = 54,Magenta_26_55 = 55,Magenta_33_56 = 56,Magenta_40_57 = 57,Yellow_13_58 = 58,Grey_20_59 = 59,Cyan_26_60 = 60,
-    Cyan_33_61 = 61,Cyan_40_62 = 62,Cyan_46_63 = 63,Yellow_20_64 = 64,Teal_26_65 = 65,Teal_33_66 = 66,Cyan_40_67 = 67,Cyan_46_68 = 68,Cyan_53_69 = 69,Yellow_26_70 = 70,
-    Teal_33_71 = 71,Teal_40_72 = 72,Teal_46_73 = 73,Cyan_53_74 = 74,Cyan_59_75 = 75,Yellow_33_76 = 76,Teal_40_77 = 77,Teal_46_78 = 78,Teal_53_79 = 79,Teal_59_80 = 80,
-    Cyan_66_81 = 81,Yellow_40_82 = 82,Teal_46_83 = 83,Teal_53_84 = 84,Teal_59_85 = 85,Teal_66_86 = 86,Teal_73_87 = 87,Red_13_88 = 88,Magenta_20_89 = 89,Magenta_26_90 = 90,
-    Magenta_33_91 = 91, Magenta_40_92 = 92,Magenta_46_93 = 93,Orange_20_94 = 94,Pink_26_95 = 95,Pink_33_96 = 96,Purple_40_97 = 97,Purple_46_98 = 98,Purple_53_99 = 99,Yellow_26_100 = 100,
-    Orange_33_101 = 101,Grey_40_102 = 102,Cyan_46_103 = 103,Cyan_53_104 = 104,Cyan_59_105 = 105,Yellow_33_106 = 106,Lime_40_107 = 107,Teal_46_108 = 108,Teal_53_109 = 109,Cyan_59_110 = 110,
-    Cyan_66_111 = 111,Yellow_40_112 = 112,Lime_46_113 = 113,Teal_53_114 = 114,Teal_59_115 = 115,Teal_66_116 = 116,Cyan_73_117 = 117,Yellow_46_118 = 118,Lime_53_119 = 119,Teal_59_120 = 120,Teal_66_121 = 121,
-    Teal_73_122 = 122,Teal_79_123 = 123,Red_20_124 = 124,Magenta_26_125 = 125,Magenta_33_126 = 126,Magenta_40_127 = 127,Magenta_46_128 = 128,Magenta_53_129 = 129,Orange_26_130 = 130,Pink_33_131 = 131,
-    Pink_40_132 = 132, Pink_46_133 = 133,Purple_53_134 = 134,Purple_59_135 = 135,Orange_33_136 = 136,Orange_40_137 = 137,Pink_46_138 = 138,Pink_53_139 = 139,Purple_59_140 = 140,Purple_66_141 = 141,
-    Yellow_40_142 = 142, Orange_46_143 = 143,Orange_53_144 = 144,Grey_59_145 = 145,Cyan_66_146 = 146,Cyan_73_147 = 147,Yellow_46_148 = 148,Lime_53_149 = 149,Lime_59_150 = 150,Teal_66_151 = 151,Teal_73_152 = 152,
-    Cyan_79_153 = 153,Yellow_53_154 = 154, Lime_59_155 = 155,Lime_66_156 = 156,Teal_73_157 = 157,Teal_79_158 = 158,Teal_86_159 = 159,Red_26_160 = 160,Magenta_33_161 = 161,Magenta_40_162 = 162,Magenta_46_163 = 163,
-    Magenta_53_164 = 164,Magenta_59_165 = 165,Orange_33_166 = 166,Pink_40_167 = 167,Pink_46_168 = 168,Pink_53_169 = 169,Pink_59_170 = 170,Purple_66_171 = 171,Orange_40_172 = 172,Orange_46_173 = 173,
-    Pink_53_174 = 174,Pink_59_175 = 175,Pink_66_176 = 176,Purple_73_177 = 177,Orange_46_178 = 178,Orange_53_179 = 179,Orange_59_180 = 180,Pink_66_181 = 181,Pink_73_182 = 182,Purple_79_183 = 183,
-    Yellow_53_184 = 184,Orange_59_185 = 185,Orange_66_186 = 186,Orange_73_187 = 187,Grey_79_188 = 188,Cyan_86_189 = 189,Yellow_59_190 = 190,Lime_66_191 = 191,Lime_73_192 = 192,Lime_79_193 = 193,
-    Teal_86_194 = 194,Teal_92_195 = 195,Red_33_196 = 196,Magenta_40_197 = 197,Magenta_46_198 = 198,Magenta_53_199 = 199,Magenta_59_200 = 200,Magenta_66_201 = 201,Orange_40_202 = 202,Pink_46_203 = 203,
-    Pink_53_204 = 204, Pink_59_205 = 205,Pink_66_206 = 206,Pink_73_207 = 207,Orange_46_208 = 208,Orange_53_209 = 209,Pink_59_210 = 210,Pink_66_211 = 211,Pink_73_212 = 212,Pink_79_213 = 213,
-    Orange_53_214 = 214, Orange_59_215 = 215, Orange_66_216 = 216, Pink_73_217 = 217, Pink_79_218 = 218, Pink_86_219 = 219, Orange_59_220 = 220, Orange_66_221 = 221, Orange_73_222 = 222, Orange_79_223 = 223,
-    Pink_86_224 = 224,Pink_92_225 = 225,Yellow_66_226 = 226,Orange_73_227 = 227,Orange_79_228 = 228,Orange_86_229 = 229,Orange_92_230 = 230,White_99_231 = 231,Grey_00_232 = 232,Grey_04_233 = 233,Grey_09_234 = 234,
-    Grey_13_235 = 235,Grey_17_236 = 236,Grey_22_237 = 237,Grey_26_238 = 238,Grey_30_239 = 239,Grey_34_240 = 240,Grey_39_241 = 241,Grey_43_242 = 242,Grey_47_243 = 243,Grey_52_244 = 244,
-    Grey_56_245 = 245,Grey_60_246 = 246, Grey_65_247 = 247,Grey_69_248 = 248,Grey_73_249 = 249,Grey_77_250 = 250,Grey_82_251 = 251,Grey_86_252 = 252,Grey_90_253 = 253,Grey_95_254 = 254,Grey_99_255 = 255
+    Black = 0, Maroon = 1, DarkGreen = 2, Olive = 3, Navy = 4, Purple = 5, Teal = 6, Silver = 7,
+    Grey = 8, Red = 9, Lime = 10, Yellow = 11, Blue = 12, Fuchsia = 13, Aqua = 14, White = 15,
+    Color16 = 16, Color17 = 17, Color18 = 18, Color19 = 19, Color20 = 20, Color21 = 21, Color22 = 22, Color23 = 23,
+    Color24 = 24, Color25 = 25, Color26 = 26, Color27 = 27, Color28 = 28, Color29 = 29, Color30 = 30, Color31 = 31,
+    Color32 = 32, Color33 = 33, Color34 = 34, Color35 = 35, Color36 = 36, Color37 = 37, Color38 = 38, Color39 = 39,
+    Color40 = 40, Color41 = 41, Color42 = 42, Color43 = 43, Color44 = 44, Color45 = 45, Color46 = 46, Color47 = 47,
+    Color48 = 48, Color49 = 49, Color50 = 50, Color51 = 51, Color52 = 52, Color53 = 53, Color54 = 54, Color55 = 55,
+    Color56 = 56, Color57 = 57, Color58 = 58, Color59 = 59, Color60 = 60, Color61 = 61, Color62 = 62, Color63 = 63,
+    Color64 = 64, Color65 = 65, Color66 = 66, Color67 = 67, Color68 = 68, Color69 = 69, Color70 = 70, Color71 = 71,
+    Color72 = 72, Color73 = 73, Color74 = 74, Color75 = 75, Color76 = 76, Color77 = 77, Color78 = 78, Color79 = 79,
+    Color80 = 80, Color81 = 81, Color82 = 82, Color83 = 83, Color84 = 84, Color85 = 85, Color86 = 86, Color87 = 87,
+    Color88 = 88, Color89 = 89, Color90 = 90, Color91 = 91, Color92 = 92, Color93 = 93, Color94 = 94, Color95 = 95,
+    Color96 = 96, Color97 = 97, Color98 = 98, Color99 = 99, Color100 = 100, Color101 = 101, Color102 = 102, Color103 = 103,
+    Color104 = 104, Color105 = 105, Color106 = 106, Color107 = 107, Color108 = 108, Color109 = 109, Color110 = 110,
+    Color111 = 111, Color112 = 112, Color113 = 113, Color114 = 114, Color115 = 115, Color116 = 116, Color117 = 117,
+    Color118 = 118, Color119 = 119, Color120 = 120, Color121 = 121, Color122 = 122, Color123 = 123, Color124 = 124,
+    Color125 = 125, Color126 = 126, Color127 = 127, Color128 = 128, Color129 = 129, Color130 = 130, Color131 = 131,
+    Color132 = 132, Color133 = 133, Color134 = 134, Color135 = 135, Color136 = 136, Color137 = 137, Color138 = 138,
+    Color139 = 139, Color140 = 140, Color141 = 141, Color142 = 142, Color143 = 143, Color144 = 144, Color145 = 145,
+    Color146 = 146, Color147 = 147, Color148 = 148, Color149 = 149, Color150 = 150, Color151 = 151, Color152 = 152,
+    Color153 = 153, Color154 = 154, Color155 = 155, Color156 = 156, Color157 = 157, Color158 = 158, Color159 = 159,
+    Color160 = 160, Color161 = 161, Color162 = 162, Color163 = 163, Color164 = 164, Color165 = 165, Color166 = 166,
+    Color167 = 167, Color168 = 168, Color169 = 169, Color170 = 170, Color171 = 171, Color172 = 172, Color173 = 173,
+    Color174 = 174, Color175 = 175, Color176 = 176, Color177 = 177, Color178 = 178, Color179 = 179, Color180 = 180,
+    Color181 = 181, Color182 = 182, Color183 = 183, Color184 = 184, Color185 = 185, Color186 = 186, Color187 = 187,
+    Color188 = 188, Color189 = 189, Color190 = 190, Color191 = 191, Color192 = 192, Color193 = 193, Color194 = 194,
+    Color195 = 195, Color196 = 196, Color197 = 197, Color198 = 198, Color199 = 199, Color200 = 200, Color201 = 201,
+    Color202 = 202, Color203 = 203, Color204 = 204, Color205 = 205, Color206 = 206, Color207 = 207, Color208 = 208,
+    Color209 = 209, Color210 = 210, Color211 = 211, Color212 = 212, Color213 = 213, Color214 = 214, Color215 = 215,
+    Color216 = 216, Color217 = 217, Color218 = 218, Color219 = 219, Color220 = 220, Color221 = 221, Color222 = 222,
+    Color223 = 223, Color224 = 224, Color225 = 225, Color226 = 226, Color227 = 227, Color228 = 228, Color229 = 229,
+    Color230 = 230, Color231 = 231, Color232 = 232, Color233 = 233, Color234 = 234, Color235 = 235, Color236 = 236,
+    Color237 = 237, Color238 = 238, Color239 = 239, Color240 = 240, Color241 = 241, Color242 = 242, Color243 = 243,
+    Color244 = 244, Color245 = 245, Color246 = 246, Color247 = 247, Color248 = 248, Color249 = 249, Color250 = 250,
+    Color251 = 251, Color252 = 252, Color253 = 253, Color254 = 254, Color255 = 255
 }
 
 // Vec3 
@@ -653,69 +665,69 @@ class Engine3D
                         scaleX:1f, scaleY:1f, scaleZ:3f),
         new SceneObject(Mesh.Cube(),    x:  0, y: 4, z: 0, color: Color.White,
                         scaleX:1f, scaleY:3f, scaleZ:1f),
-        new SceneObject(Mesh.Pyramid(), x:  0, y: 9, z: 0, color: Color.Yellow_26_70,
+        new SceneObject(Mesh.Pyramid(), x:  0, y: 9, z: 0, color: Color.Color102,
                         scaleX:1f, scaleY:2f, scaleZ:1f, rotY: 45*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Pyramid(), x: -4, y: 3, z: 4, color: Color.Cyan_33_61,
+        new SceneObject(Mesh.Pyramid(), x: -4, y: 3, z: 4, color: Color.Color100,
                         scaleX:1.5f, scaleY:2f, scaleZ:1.5f, rotX: 20*SceneObject.Deg(1), rotZ: -15*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Cube(),    x:  4, y: 0, z: 6, color: Color.Yellow_26_70),
-        new SceneObject(Mesh.Pyramid(), x:  8, y: 5, z: 3, color: Color.Red_07_52,
+        new SceneObject(Mesh.Cube(),    x:  4, y: 0, z: 6, color: Color.Color187),
+        new SceneObject(Mesh.Pyramid(), x:  8, y: 5, z: 3, color: Color.Color244,
                         scaleX:1f, scaleY:1.5f, scaleZ:1f, rotY: 60*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z:  5, color: Color.Azure_20_24,  scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z: 15, color: Color.Azure_59_45,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z: 25, color: Color.Blue_07_17,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z: -5, color: Color.Azure_20_24, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:   0, y:-1, z: -5, color: Color.Grey_17_236,  scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z:  5, color: Color.Color105,  scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z: 15, color: Color.Color187,    scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z: 25, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z: -5, color: Color.Color244, scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:   0, y:-1, z: -5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
         new SceneObject(Mesh.Plane(),   x:   0, y:-1, z:  5, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:   0, y:-1, z: 15, color: Color.Blue_07_17,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:   0, y:-1, z: 25, color: Color.Azure_20_24, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  10, y:-1, z:  5, color: Color.Grey_17_236,  scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:   0, y:-1, z: 15, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:   0, y:-1, z: 25, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  10, y:-1, z:  5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
         new SceneObject(Mesh.Plane(),   x:  10, y:-1, z: 15, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  10, y:-1, z: 25, color: Color.Blue_07_17,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  10, y:-1, z: -5, color: Color.Azure_20_24, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  20, y:-1, z: -5, color: Color.Grey_17_236,  scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  10, y:-1, z: 25, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  10, y:-1, z: -5, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  20, y:-1, z: -5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
         new SceneObject(Mesh.Plane(),   x:  20, y:-1, z:  5, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  20, y:-1, z: 15, color: Color.Blue_07_17,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  20, y:-1, z: 25, color: Color.Azure_20_24, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  30, y:-1, z:  5, color: Color.Grey_17_236,  scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  20, y:-1, z: 15, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  20, y:-1, z: 25, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  30, y:-1, z:  5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
         new SceneObject(Mesh.Plane(),   x:  30, y:-1, z: 15, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  30, y:-1, z: 25, color: Color.Blue_07_17,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  30, y:-1, z: -5, color: Color.Azure_20_24, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  40, y:-1, z: -5, color: Color.Grey_17_236,  scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  30, y:-1, z: 25, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  30, y:-1, z: -5, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  40, y:-1, z: -5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
         new SceneObject(Mesh.Plane(),   x:  40, y:-1, z:  5, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  40, y:-1, z: 15, color: Color.Blue_07_17,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  40, y:-1, z: 25, color: Color.Azure_20_24, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  50, y:-1, z:  5, color: Color.Grey_17_236,  scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  40, y:-1, z: 15, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  40, y:-1, z: 25, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  50, y:-1, z:  5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
         new SceneObject(Mesh.Plane(),   x:  50, y:-1, z: 15, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  50, y:-1, z: 25, color: Color.Blue_07_17,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  50, y:-1, z: -5, color: Color.Azure_20_24, scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  50, y:-1, z: 25, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
+        new SceneObject(Mesh.Plane(),   x:  50, y:-1, z: -5, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
         new SceneObject(Mesh.Plane(),   x: 20, y: 4f, z: 10, color: Color.DarkGreen,
                         scaleX:-5f, scaleY:1f, scaleZ:5f, rotX:90*SceneObject.Deg(1)),
         new SceneObject(Mesh.Plane(),   x: 25, y: 4f, z: 15, color: Color.Black,
                         scaleX:-5f, scaleY:1f, scaleZ:5f, rotX:90*SceneObject.Deg(1), rotY:90*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Plane(),   x: 20, y: 4f, z: 20, color: Color.Blue_07_17,
+        new SceneObject(Mesh.Plane(),   x: 20, y: 4f, z: 20, color: Color.Color100,
                         scaleX:-5f, scaleY:1f, scaleZ:5f, rotX:90*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Plane(),   x: 20, y: 9,  z: 15, color: Color.Green_33_46,
+        new SceneObject(Mesh.Plane(),   x: 20, y: 9,  z: 15, color: Color.Color100,
                         scaleX:-5f, scaleY:1f, scaleZ:5f),
 
-        new SceneObject(Mesh.Cube(), x:-5,  y:9, z:20, scaleX:1, scaleY:10, scaleZ:1, color: Color.Blue_07_17),
-        new SceneObject(Mesh.Cube(), x:-15, y:9, z:10, scaleX:1, scaleY:10, scaleZ:1, color: Color.Blue_07_17,
+        new SceneObject(Mesh.Cube(), x:-5,  y:9, z:20, scaleX:1, scaleY:10, scaleZ:1, color: Color.Color100),
+        new SceneObject(Mesh.Cube(), x:-15, y:9, z:10, scaleX:1, scaleY:10, scaleZ:1, color: Color.Color100,
                         rotY:45, rotX:(float)Gametest.rampWinkel(Gametest.c(5,5),10,Gametest.rampL(Gametest.c(5,5),10))),
 
        
-        new SceneObject(Mesh.Cube(), x:5, y:15, z:5, color:Color.Red_33_196,
+        new SceneObject(Mesh.Cube(), x:5, y:15, z:5, color:Color.DarkGreen,
                         rigidBody:true, mass:1f, restitution:0.5f),
 
         
-        new SceneObject(Mesh.Cube(), x:-3, y:20, z:8, color:Color.Orange_40_137,
+        new SceneObject(Mesh.Cube(), x:-3, y:20, z:8, color:Color.DarkGreen,
                         scaleX:1.5f, scaleY:1.5f, scaleZ:1.5f,
                         rigidBody:true, mass:3f, restitution:0.1f),
 
         
         SceneObject.Tesseract(x:20, y:20, z:15, scaleX:-3f, scaleY:-3f, scaleZ:-3f,
-                              color:Color.Purple_53_99, spinXW:1f, spinYW:1f),
+                              color:Color.DarkGreen, spinXW:1f, spinYW:1f),
 
         
-        new SceneObject(Mesh.kugel(), x:50 ,y:20 , z:0 , scaleX:1,scaleY:1,scaleZ:1,color: Color.Purple_53_134, rigidBody:true , mass:1f)
+        new SceneObject(Mesh.kugel(), x:50 ,y:20 , z:0 , scaleX:1,scaleY:1,scaleZ:1,color: Color.DarkGreen, rigidBody:true , mass:1f)
 
         
     };
@@ -779,7 +791,7 @@ class Engine3D
         {
             Scene.Add(new SceneObject(Mesh.Cube(), x:50, y:40, z:5,
                                           scaleX:0.5f, scaleY:0.5f, scaleZ:0.5f,
-                                          color:Color.Orange_26_130,rigidBody:true,mass:10f));
+                                          color:Color.Color132,rigidBody:true,mass:10f));
         }
 
 
@@ -794,7 +806,7 @@ class Engine3D
                 int cz=Convert.ToInt32(Math.Round(hitPos.Z));
                 Scene.Add(new SceneObject(Mesh.Cube(), x:cx, y:cy, z:cz,
                                           scaleX:0.5f, scaleY:0.5f, scaleZ:0.5f,
-                                          color:Color.Orange_26_130));
+                                          color:Color.Color132));
             }
         }
 
@@ -897,7 +909,7 @@ public static class RawInput
 
     public static void Start(HashSet<ConsoleKey> keys, object keyLock, Action<bool> setSprint)
     {
-        string? dev = "/dev/input/event7";
+        string? dev = "/dev/input/event12";
         //string? dev = FindKeyboard();
         if (dev == null) return;
 
@@ -959,7 +971,7 @@ public static class RawInput
         t.Start();
 
         // mouse thread
-        string? mouseDev = "/dev/input/event8";
+        string? mouseDev = "/dev/input/event13";
         //FindMouse();
         if (mouseDev != null)
         {
