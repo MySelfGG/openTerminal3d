@@ -52,7 +52,7 @@ public enum Color {
     Color230 = 230, Color231 = 231, Color232 = 232, Color233 = 233, Color234 = 234, Color235 = 235, Color236 = 236,
     Color237 = 237, Color238 = 238, Color239 = 239, Color240 = 240, Color241 = 241, Color242 = 242, Color243 = 243,
     Color244 = 244, Color245 = 245, Color246 = 246, Color247 = 247, Color248 = 248, Color249 = 249, Color250 = 250,
-    Color251 = 251, Color252 = 252, Color253 = 253, Color254 = 254, Color255 = 255
+    Color251 = 251, Color252 = 252, Color253 = 253, Color254 = 254, Color255 = 255 , ColorUnknown = 255 , Color15 = 15,Color0 = 0,Color5 =4,
 }
 
 // Vec3 
@@ -171,12 +171,13 @@ public class Mesh
         },
         new (int,int,int,int,float)[]
         {
-            (3,7,6,2,-0.1f),
-            (0,1,5,4,-0.1f),
-            (1,2,6,5,-0.1f),
-            (0,4,7,3,-0.1f),
-            (4,5,6,7,-0.1f),
             (3,2,1,0,-0.2f),
+            (4,5,6,7,-0.1f),
+            (0,4,7,3,-0.1f),
+            (1,2,6,5,-0.1f),
+            (0,1,5,4,-0.1f),
+            (3,7,6,2,-0.1f),
+            
         });
 
     public static Mesh _TesseractPlaceholder() => new(
@@ -282,47 +283,49 @@ public void MarkDirty() => AabbDirty = true;
     public static float Deg(float degrees) => degrees * MathF.PI / 180f;
 
     public SceneObject(Mesh mesh,
-                       float x=0,           float y=0,           float z=0,
-                       float scaleX=1,      float scaleY=1,      float scaleZ=1,
-                       float rotX=0,        float rotY=0,        float rotZ=0,
-                       Color color=Color.White,
-                       bool  rigidBody=false,
-                       float mass=1f,
-                       float restitution=0.4f,
-                       float friction=0.5f,
-                       float comX=0f,       float comY=0f,       float comZ=0f)
-    {
-        Mesh=mesh; Color=color;
-        Position=new Vec3(x,y,z);
-        Scale   =new Vec3(scaleX,scaleY,scaleZ);
-        RotX=rotX; RotY=rotY; RotZ=rotZ;
+                   float x=0,           float y=0,           float z=0,
+                   float scaleX=1,      float scaleY=1,      float scaleZ=1,
+                   float rotX=0,        float rotY=0,        float rotZ=0,
+                   Color color=Color.White,
+                   bool  rigidBody=false,
+                   float mass=1f,
+                   float restitution=0.4f,
+                   float friction=0.5f,
+                   float comX=0f,       float comY=0f,       float comZ=0f)
+{
+    Mesh=mesh; Color=color;
+    Position=new Vec3(x,y,z);
+    Scale   =new Vec3(scaleX,scaleY,scaleZ);
+    RotX = rotX * MathF.PI / 180f;
+    RotY = rotY * MathF.PI / 180f;
+    RotZ = rotZ * MathF.PI / 180f;
 
-        if (rigidBody)
+    if (rigidBody)
+    {
+        Body = new RigidBody
         {
-            Body = new RigidBody
-            {
-                Mass          = mass,
-                Restitution   = restitution,
-                Friction      = friction,
-                CenterOfMass  = new Vec3(comX, comY, comZ),
-            };
-            Body.ComputeBoxInertia(Scale);
-        }
+            Mass          = mass,
+            Restitution   = restitution,
+            Friction      = friction,
+            CenterOfMass  = new Vec3(comX, comY, comZ),
+        };
+        Body.ComputeBoxInertia(Scale);
     }
+}
 
     public static SceneObject Tesseract(
-        float x=0, float y=0, float z=0,
-        float scaleX=1, float scaleY=1, float scaleZ=1,
-        float rotX=0,   float rotY=0,   float rotZ=0,
-        Color color=Color.White, float wDist=2f,
-        float spinXW=0.7f, float spinYW=0.4f, float spinZW=0f)
-    {
-        var tess = new Tesseract4D { WDist=wDist };
-        var obj  = new SceneObject(tess.Project4D(), x,y,z, scaleX,scaleY,scaleZ,
-                                   rotX,rotY,rotZ, color)
-        { Tess4D=tess, SpinXW=spinXW, SpinYW=spinYW, SpinZW=spinZW };
-        return obj;
-    }
+    float x=0, float y=0, float z=0,
+    float scaleX=1, float scaleY=1, float scaleZ=1,
+    float rotX=0,   float rotY=0,   float rotZ=0,
+    Color color=Color.White, float wDist=2f,
+    float spinXW=0.7f, float spinYW=0.4f, float spinZW=0f)
+{
+    var tess = new Tesseract4D { WDist=wDist };
+    var obj  = new SceneObject(tess.Project4D(), x,y,z, scaleX,scaleY,scaleZ,
+                               rotX,rotY,rotZ, color)   // constructor now handles conversion
+    { Tess4D=tess, SpinXW=spinXW, SpinYW=spinYW, SpinZW=spinZW };
+    return obj;
+}
 
     public Vec3 LocalToWorld(Vec3 v)
     {
@@ -661,66 +664,58 @@ class Engine3D
 
     static List<SceneObject> Scene = new()
     {
-        new SceneObject(Mesh.Cube(),    x:  0, y: 0, z: 0, color: Color.White,
-                        scaleX:1f, scaleY:1f, scaleZ:3f),
-        new SceneObject(Mesh.Cube(),    x:  0, y: 4, z: 0, color: Color.White,
-                        scaleX:1f, scaleY:3f, scaleZ:1f),
-        new SceneObject(Mesh.Pyramid(), x:  0, y: 9, z: 0, color: Color.Color102,
-                        scaleX:1f, scaleY:2f, scaleZ:1f, rotY: 45*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Pyramid(), x: -4, y: 3, z: 4, color: Color.Color100,
-                        scaleX:1.5f, scaleY:2f, scaleZ:1.5f, rotX: 20*SceneObject.Deg(1), rotZ: -15*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Cube(),    x:  4, y: 0, z: 6, color: Color.Color187),
-        new SceneObject(Mesh.Pyramid(), x:  8, y: 5, z: 3, color: Color.Color244,
-                        scaleX:1f, scaleY:1.5f, scaleZ:1f, rotY: 60*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z:  5, color: Color.Color105,  scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z: 15, color: Color.Color187,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z: 25, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x: -10, y:-1, z: -5, color: Color.Color244, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:   0, y:-1, z: -5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:   0, y:-1, z:  5, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:   0, y:-1, z: 15, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:   0, y:-1, z: 25, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  10, y:-1, z:  5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  10, y:-1, z: 15, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  10, y:-1, z: 25, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  10, y:-1, z: -5, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  20, y:-1, z: -5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  20, y:-1, z:  5, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  20, y:-1, z: 15, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  20, y:-1, z: 25, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  30, y:-1, z:  5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  30, y:-1, z: 15, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  30, y:-1, z: 25, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  30, y:-1, z: -5, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  40, y:-1, z: -5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  40, y:-1, z:  5, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  40, y:-1, z: 15, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  40, y:-1, z: 25, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  50, y:-1, z:  5, color: Color.Color187,  scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  50, y:-1, z: 15, color: Color.DarkGreen,    scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  50, y:-1, z: 25, color: Color.Color132,   scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x:  50, y:-1, z: -5, color: Color.Color100, scaleX:-5f, scaleY:1f, scaleZ:5f),
-        new SceneObject(Mesh.Plane(),   x: 20, y: 4f, z: 10, color: Color.DarkGreen,
-                        scaleX:-5f, scaleY:1f, scaleZ:5f, rotX:90*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Plane(),   x: 25, y: 4f, z: 15, color: Color.Black,
-                        scaleX:-5f, scaleY:1f, scaleZ:5f, rotX:90*SceneObject.Deg(1), rotY:90*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Plane(),   x: 20, y: 4f, z: 20, color: Color.Color100,
-                        scaleX:-5f, scaleY:1f, scaleZ:5f, rotX:90*SceneObject.Deg(1)),
-        new SceneObject(Mesh.Plane(),   x: 20, y: 9,  z: 15, color: Color.Color100,
-                        scaleX:-5f, scaleY:1f, scaleZ:5f),
+new SceneObject(Mesh.Cube(), x:4.0f, y:0.0f, z:6.0f, color: Color.Color187, scaleX:1.0f, scaleY:1.0f, scaleZ:1.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-10.0f, y:-1.0f, z:5.0f, color: Color.Color119, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-10.0f, y:-1.0f, z:15.0f, color: Color.Color187, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-10.0f, y:-1.0f, z:25.0f, color: Color.Color132, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-10.0f, y:-1.0f, z:-5.0f, color: Color.ColorUnknown, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:0.0f, y:-1.0f, z:-5.0f, color: Color.Color187, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:0.0f, y:-1.0f, z:15.0f, color: Color.Color132, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:0.0f, y:-1.0f, z:25.0f, color: Color.Color100, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:10.0f, y:-1.0f, z:5.0f, color: Color.Color187, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:10.0f, y:-1.0f, z:25.0f, color: Color.Color132, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:10.0f, y:-1.0f, z:-5.0f, color: Color.Color100, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:20.0f, y:-1.0f, z:-5.0f, color: Color.Color187, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:20.0f, y:-1.0f, z:15.0f, color: Color.Color132, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:20.0f, y:-1.0f, z:25.0f, color: Color.Color100, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:30.0f, y:-1.0f, z:5.0f, color: Color.Color187, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:30.0f, y:-1.0f, z:25.0f, color: Color.Color132, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:30.0f, y:-1.0f, z:-5.0f, color: Color.Color100, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:40.0f, y:-1.0f, z:-5.0f, color: Color.Color187, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:40.0f, y:-1.0f, z:15.0f, color: Color.Color132, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:40.0f, y:-1.0f, z:25.0f, color: Color.Color100, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:50.0f, y:-1.0f, z:5.0f, color: Color.Color187, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:50.0f, y:-1.0f, z:25.0f, color: Color.Color132, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:50.0f, y:-1.0f, z:-5.0f, color: Color.Color100, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:20.0f, y:9.0f, z:15.0f, color: Color.Color100, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:20.0f, y:4.0f, z:10.0f, color: Color.Color69, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:90.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:20.0f, y:4.0f, z:20.0f, color: Color.ColorUnknown, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:90.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:25.0f, y:4.0f, z:15.0f, color: Color.ColorUnknown, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:90.0f, rotY:90.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:0.45f, y:5.1f, z:15.0f, color: Color.ColorUnknown, scaleX:15.0f, scaleY:1.0f, scaleZ:5.0f, rotX:180.0f, rotY:1.0f, rotZ:15.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-20.0f, y:-1.0f, z:5.0f, color: Color.Color135, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-20.0f, y:-1.0f, z:15.0f, color: Color.Color177, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-20.0f, y:-1.0f, z:-5.0f, color: Color.Color77, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-20.0f, y:-1.0f, z:25.0f, color: Color.Color102, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-30.0f, y:-1.0f, z:-5.0f, color: Color.Color200, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-30.0f, y:-1.0f, z:5.0f, color: Color.Color38, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-30.0f, y:-1.0f, z:15.0f, color: Color.Color83, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-30.0f, y:-1.0f, z:25.0f, color: Color.Color178, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:50.0f, y:-1.0f, z:15.0f, color: Color.Color81, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-20.0f, y:1.2f, z:15.0f, color: Color.ColorUnknown, scaleX:6.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:0.0f, y:-1.0f, z:5.0f, color: Color.ColorUnknown, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:10.0f, y:-1.0f, z:15.0f, color: Color.Color15, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-20.0f, y:-0.12f, z:5.0f, color: Color.Color15, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:15.0f, rotY:180.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Pyramid(), x:0.0f, y:20.0f, z:5.0f, color: Color.Color89, scaleX:1.0f, scaleY:1.0f, scaleZ:1.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:true, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:20.0f, y:13.0f, z:35.0f, color: Color.Color84, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.kugel(), x:0.0f, y:0.0f, z:5.0f, color: Color.ColorUnknown, scaleX:1.0f, scaleY:1.0f, scaleZ:1.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.kugel(), x:0.0f, y:16.0f, z:45.0f, color: Color.Color119, scaleX:1.0f, scaleY:1.0f, scaleZ:1.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 
-        new SceneObject(Mesh.Cube(), x:-5,  y:9, z:20, scaleX:1, scaleY:10, scaleZ:1, color: Color.Color100),
-        new SceneObject(Mesh.Cube(), x:-15, y:9, z:10, scaleX:1, scaleY:10, scaleZ:1, color: Color.Color100,
-                        rotY:45, rotX:(float)Gametest.rampWinkel(Gametest.c(5,5),10,Gametest.rampL(Gametest.c(5,5),10))),
 
-       
-        new SceneObject(Mesh.Cube(), x:5, y:15, z:5, color:Color.DarkGreen,
-                        rigidBody:true, mass:1f, restitution:0.5f),
 
-        
-        new SceneObject(Mesh.Cube(), x:-3, y:20, z:8, color:Color.DarkGreen,
-                        scaleX:1.5f, scaleY:1.5f, scaleZ:1.5f,
-                        rigidBody:true, mass:3f, restitution:0.1f),
+
+
+
+
 
         
         SceneObject.Tesseract(x:20, y:20, z:15, scaleX:-3f, scaleY:-3f, scaleZ:-3f,
@@ -777,10 +772,10 @@ class Engine3D
         Physics.StepRigidBodies(Scene, dt);
 
         counter += 0.02f;
-        Scene[1].RotX = counter;
-        Scene[3].RotY += 1.0f * dt;
+        //Scene[1].RotX = counter;
+        //Scene[3].RotY += 1.0f * dt;
 
-        Scene[43].RotX += 1f *dt;
+        //Scene[43].RotX += 1f *dt;
 
         Vec3  origin  = new Vec3(camX, camY-0.5f, camZ);
         Vec3  forward = CameraForward();
