@@ -9,6 +9,8 @@ using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Text.Json;
+using System.Numerics;
 
 
 
@@ -158,7 +160,7 @@ public class Mesh
 
 
 
-    public static Mesh kugel() => RandomAhhhMeshshit.GenerateSphereMesh(16, 16, 5f);
+    public static Mesh Sphere() => RandomAhhhMeshshit.GenerateSphereMesh(16, 16, 5f);
 
     
 
@@ -668,7 +670,7 @@ new SceneObject(Mesh.Cube(), x:4.0f, y:0.0f, z:6.0f, color: Color.Color187, scal
 new SceneObject(Mesh.Plane(), x:-10.0f, y:-1.0f, z:5.0f, color: Color.Color119, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:-10.0f, y:-1.0f, z:15.0f, color: Color.Color187, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:-10.0f, y:-1.0f, z:25.0f, color: Color.Color132, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
-new SceneObject(Mesh.Plane(), x:-10.0f, y:-1.0f, z:-5.0f, color: Color.ColorUnknown, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-10.0f, y:-1.0f, z:-5.0f, color: Color.Color15, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:0.0f, y:-1.0f, z:-5.0f, color: Color.Color187, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:0.0f, y:-1.0f, z:15.0f, color: Color.Color132, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:0.0f, y:-1.0f, z:25.0f, color: Color.Color100, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
@@ -689,9 +691,9 @@ new SceneObject(Mesh.Plane(), x:50.0f, y:-1.0f, z:25.0f, color: Color.Color132, 
 new SceneObject(Mesh.Plane(), x:50.0f, y:-1.0f, z:-5.0f, color: Color.Color100, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:20.0f, y:9.0f, z:15.0f, color: Color.Color100, scaleX:-5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:20.0f, y:4.0f, z:10.0f, color: Color.Color69, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:90.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
-new SceneObject(Mesh.Plane(), x:20.0f, y:4.0f, z:20.0f, color: Color.ColorUnknown, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:90.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
-new SceneObject(Mesh.Plane(), x:25.0f, y:4.0f, z:15.0f, color: Color.ColorUnknown, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:90.0f, rotY:90.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
-new SceneObject(Mesh.Plane(), x:0.45f, y:5.1f, z:15.0f, color: Color.ColorUnknown, scaleX:15.0f, scaleY:1.0f, scaleZ:5.0f, rotX:180.0f, rotY:1.0f, rotZ:15.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:20.0f, y:4.0f, z:20.0f, color: Color.Color15, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:90.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:25.0f, y:4.0f, z:15.0f, color: Color.Color15, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:90.0f, rotY:90.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:0.45f, y:5.1f, z:15.0f, color: Color.Color15, scaleX:15.0f, scaleY:1.0f, scaleZ:5.0f, rotX:180.0f, rotY:1.0f, rotZ:15.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:-20.0f, y:-1.0f, z:5.0f, color: Color.Color135, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:-20.0f, y:-1.0f, z:15.0f, color: Color.Color177, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:-20.0f, y:-1.0f, z:-5.0f, color: Color.Color77, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
@@ -701,14 +703,15 @@ new SceneObject(Mesh.Plane(), x:-30.0f, y:-1.0f, z:5.0f, color: Color.Color38, s
 new SceneObject(Mesh.Plane(), x:-30.0f, y:-1.0f, z:15.0f, color: Color.Color83, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:-30.0f, y:-1.0f, z:25.0f, color: Color.Color178, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:50.0f, y:-1.0f, z:15.0f, color: Color.Color81, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
-new SceneObject(Mesh.Plane(), x:-20.0f, y:1.2f, z:15.0f, color: Color.ColorUnknown, scaleX:6.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
-new SceneObject(Mesh.Plane(), x:0.0f, y:-1.0f, z:5.0f, color: Color.ColorUnknown, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
-new SceneObject(Mesh.Plane(), x:10.0f, y:-1.0f, z:15.0f, color: Color.Color15, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
-new SceneObject(Mesh.Plane(), x:-20.0f, y:-0.12f, z:5.0f, color: Color.Color15, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:15.0f, rotY:180.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-20.0f, y:1.2f, z:15.0f, color: Color.Color15, scaleX:6.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:0.0f, y:-1.0f, z:5.0f, color: Color.Color15, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:10.0f, y:-1.0f, z:15.0f, color: Color.ColorUnknown, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Plane(), x:-20.0f, y:-0.12f, z:5.0f, color: Color.ColorUnknown, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:15.0f, rotY:180.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 new SceneObject(Mesh.Pyramid(), x:0.0f, y:20.0f, z:5.0f, color: Color.Color89, scaleX:1.0f, scaleY:1.0f, scaleZ:1.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:true, mass:1.0f),
 new SceneObject(Mesh.Plane(), x:20.0f, y:13.0f, z:35.0f, color: Color.Color84, scaleX:5.0f, scaleY:1.0f, scaleZ:5.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
-new SceneObject(Mesh.kugel(), x:0.0f, y:0.0f, z:5.0f, color: Color.ColorUnknown, scaleX:1.0f, scaleY:1.0f, scaleZ:1.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
-new SceneObject(Mesh.kugel(), x:0.0f, y:16.0f, z:45.0f, color: Color.Color119, scaleX:1.0f, scaleY:1.0f, scaleZ:1.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Sphere(), x:0.0f, y:0.0f, z:5.0f, color: Color.Color15, scaleX:1.0f, scaleY:1.0f, scaleZ:1.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Sphere(), x:0.0f, y:6.0f, z:45.0f, color: Color.Color119, scaleX:1.0f, scaleY:1.0f, scaleZ:1.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
+new SceneObject(Mesh.Pyramid(), x:-20.0f, y:10.0f, z:50.0f, color: Color.ColorUnknown, scaleX:1.0f, scaleY:1.0f, scaleZ:1.0f, rotX:0.0f, rotY:0.0f, rotZ:0.0f, rigidBody:false, mass:1.0f),
 
 
 
@@ -722,7 +725,7 @@ new SceneObject(Mesh.kugel(), x:0.0f, y:16.0f, z:45.0f, color: Color.Color119, s
                               color:Color.DarkGreen, spinXW:1f, spinYW:1f),
 
         
-        new SceneObject(Mesh.kugel(), x:50 ,y:20 , z:0 , scaleX:1,scaleY:1,scaleZ:1,color: Color.DarkGreen, rigidBody:true , mass:1f)
+        new SceneObject(Mesh.Sphere(), x:50 ,y:20 , z:0 , scaleX:1,scaleY:1,scaleZ:1,color: Color.DarkGreen, rigidBody:true , mass:1f)
 
         
     };
@@ -767,6 +770,20 @@ new SceneObject(Mesh.kugel(), x:0.0f, y:16.0f, z:45.0f, color: Color.Color119, s
     static void GameLoop(float dt)
     {
         
+
+
+        if (Player.Position.Y <= -20)
+        {
+            Player.Position = new Vec3(0, 1, -8);
+            velocity = new Vec3(0, 0, 0);
+            yaw=0; pitch=0;
+        }
+        for (int i = Scene.Count - 1; i >= 0; i--)
+        {
+            if (Scene[i].Position.Y < -50)
+                Scene.RemoveAt(i);
+        }
+
 
         // rigid body simulation runs first every frame pls dont remove
         Physics.StepRigidBodies(Scene, dt);
@@ -1074,11 +1091,32 @@ public static class RawInput
     }
 }
 
+    static int jumpcount = 1;
+    static int maxjumps = 3;
+    static bool canjump = true;
+
+    static bool isjump = false;
+    private static bool spaceWasHeld = false;
+
     static void UpdateCamera(float dt)
     {
+        
         const float look    = 1.8f;
         const float speed   = 6f;
         const float gravity = -18f;
+
+
+        canjump = jumpcount >= 1;
+
+        var looked = Raycast(new Vec3(0f, -1f, 0f), 2f);
+        if (looked != null)
+        {
+            jumpcount = 2;
+
+        }
+
+
+
 
         float mdx, mdy;
     lock (RawInput.MouseLock)
@@ -1114,8 +1152,21 @@ public static class RawInput
         velocity = new Vec3(moveX, velocity.Y, moveZ);
         velocity = new Vec3(velocity.X, velocity.Y+gravity*dt, velocity.Z);
 
-        if (Keys.Contains(ConsoleKey.Spacebar))
-            velocity = new Vec3(velocity.X, 8f, velocity.Z);
+           
+        bool spaceHeld = Keys.Contains(ConsoleKey.Spacebar);
+        bool spaceJustPressed = spaceHeld && !spaceWasHeld;
+        spaceWasHeld = spaceHeld;
+
+        if (spaceJustPressed && canjump)
+        {
+            velocity = new Vec3(velocity.X, 12f, velocity.Z);
+            jumpcount--;
+            isjump = true;
+        }
+        else
+        {
+            isjump = false;
+        }
         if (Keys.Contains(ConsoleKey.C))
             velocity = new Vec3(velocity.X, -8f, velocity.Z);
 
@@ -1133,6 +1184,7 @@ public static class RawInput
             yaw=0; pitch=0;
         }
     }
+
 
     static void Render(float dt)
     {
@@ -1595,6 +1647,7 @@ public static class Physics
     obj.AabbDirty = false;
 }
  
+   
     static bool LocalSpacePenetration(SceneObject mover, SceneObject other,
                                        out Vec3 worldNormal, out float depth)
     {
